@@ -1,5 +1,5 @@
 """
-OXO 2
+OXO 2: Deluxe
 This version contains the improved main loop from Functions.
 It also has a lot of minor improvements and small new features:
 1) The displayed board now doesn't have cell numbers on it, which improves readability
