@@ -1,7 +1,7 @@
 """
 OXO 2
-second version of a simple, terminal-based
-tic-tac-toe game made in python.
+Second version of a simple, terminal-based
+tic-tac-toe game made in Python.
 For educational purposes.
 """
 
@@ -13,13 +13,11 @@ board = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']]
 # Display the current state of the board in terminal
 def display_board(board):
     print()
-
     for row in board:
         print(f'{row[0]} | {row[1]} | {row[2]}')
 
         if row != board[2]: # Don't print the dividing lines after the last row
             print('--+---+--')
-
     print()
 
 
@@ -33,7 +31,7 @@ def write_to_board(move, board, player):
     raise ValueError
 
 
-# Check if the game has ended and who the winner is / if it is a tie
+# Check who the winner is / if it is a tie
 def check_result(board):
 
     # Check for same rows
@@ -54,7 +52,7 @@ def check_result(board):
     for row in board:
         for cell in row:
             if cell != 'X' and cell != 'O':
-                return None
+                return None # Return None if the game should still continue
     
     # It's a tie!
     return '='
@@ -67,7 +65,7 @@ input('=== Welcome to OXO 2 ===\nPress Enter to START ')
 while True:
 
     display_board(board)
-    if check_result(board): # check_result(board) should be euqal to '', which means False, at the begginig
+    if check_result(board): # check_result(board) should be None, which means False, at the begginig
         break # break out of the game loop if the game has ended
 
     # Loop to keep asking the user for input until correct one is given
