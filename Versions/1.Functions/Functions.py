@@ -24,7 +24,7 @@ while True:
 
     display_board(board)
 
-    if check_result(board): # check_result(board) should be None, which means False, if there is no winner or the board hasn't been filled yet
+    if check_result(board): # check_result(board) should be None, which means False, if there is no winner or the board hasn't been fully filled yet
         break # break out of the game loop if the game has ended
 
     board = handle_input(board, 'X')

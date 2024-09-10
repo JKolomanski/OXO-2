@@ -122,10 +122,14 @@ def handle_input(board, player):
 
 # Modify the state of the board randomly
 def computer_move(board, player):
+    # Choose a random index for a row, then for a column, check if the chosen cell is empty,
+    # if not, try again (This is a crude way of doing things that may couse the loop to run repeatedly
+    # for no good reason, can you think of a better way of doing this?)
     while True:
         choiceRow = randint(0, 2)
         choiceCol = randint(0, 2)
         
+        # Modify the chosen cell
         if board[choiceRow][choiceCol] == ' ':
             board[choiceRow][choiceCol] = player
             return board
@@ -153,7 +157,7 @@ while True:
 
         display_board(board)
 
-        if check_result(board): # check_result(board) should be None, which means False, if there is no winner or the board hasn't been filled yet
+        if check_result(board): # check_result(board) should be None, which means False, if there is no winner or the board hasn't been fully filled yet
             break # break out of the game loop if the game has ended
 
         board = handle_input(board, player)

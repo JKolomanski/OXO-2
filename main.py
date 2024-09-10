@@ -1,6 +1,6 @@
 """
 OXO 2
-Remake of version of a simple, terminal-based
+Remake of a simple, terminal-based
 tic-tac-toe game made in Python a while back.
 For educational purposes.
 """
