@@ -22,7 +22,6 @@ def gamemode_selection():
             return 'singleplayer'
         else:
             print("incorrect input, please type: '1' or '2' and press Enter")
-            continue
 
 
 # Ask which player the human should be
@@ -43,7 +42,6 @@ def get_starting_player():
 
         if starting != 'X' and starting != 'O':
             print("Invalid player (please type 'X' or 'O' and press Enter)")
-            pass
         else:
             return starting
 
@@ -111,11 +109,9 @@ def handle_input(board, player):
         # Custom messages for different incorrect inputs
         except ValueError:
             print(f"Invalid input: spot '{move}' doesn't exist, you fool!")
-            continue
 
         except Exception:
             print(f"Invalid input: spot '{move}' is already taken!")
-            continue
 
     return board
 
@@ -133,6 +129,18 @@ def computer_move(board, player):
         if board[choiceRow][choiceCol] == ' ':
             board[choiceRow][choiceCol] = player
             return board
+        
+
+# Ask if the user wants to continue playing (improvement 5)
+def continue_playing():
+    while True:
+
+        continuePlaying = input('Do you want to play again? (Y/N): ').upper()
+        if continuePlaying == 'N' or continuePlaying == 'Y':
+            return continue_playing
+
+        else:
+            print('Invalid input! Please try again')
 
 
 # Display the starting message and ask the user to start the game
@@ -194,21 +202,6 @@ while True:
     else:
         print(f"Player {check_result(board)} won!")
 
-    # Ask if the user wants to continue playing
-    while True:
-
-        continuePlaying = input('Do you want to play again? (Y/N): ').upper()
-        if continuePlaying == 'N' or continuePlaying == 'Y':
-            break
-
-        else:
-            print('Invalid input! Please try again')
-            continue
-
-    if continuePlaying == 'Y':
-        continue
-    else:
-        break
+    if continue_playing() != 'Y': break
 
 print('Thank you for playing :)')
-

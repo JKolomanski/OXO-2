@@ -20,7 +20,7 @@ def get_starting_player():
 
         if starting != 'X' and starting != 'O':
             print("Invalid player (please type 'X' or 'O' and press Enter)")
-            pass
+
         else:
             return starting
 
@@ -88,13 +88,23 @@ def handle_input(board, player):
         # Custom messages for different incorrect inputs (Improvement 4)
         except ValueError:
             print(f"Invalid input: spot '{move}' doesn't exist, you fool!")
-            continue
 
         except Exception:
             print(f"Invalid input: spot '{move}' is already taken!")
-            continue
 
     return board
+
+
+# Ask if the user wants to continue playing (improvement 5)
+def continue_playing():
+    while True:
+
+        continuePlaying = input('Do you want to play again? (Y/N): ').upper()
+        if continuePlaying == 'N' or continuePlaying == 'Y':
+            return continue_playing
+
+        else:
+            print('Invalid input! Please try again')
 
 
 # Display the starting message and ask the user to start the game
@@ -132,21 +142,6 @@ while True:
     else:
         print(f"Player {check_result(board)} won!")
 
-    # Ask if the user wants to continue playing (improvement 5)
-    while True:
-
-        continuePlaying = input('Do you want to play again? (Y/N): ').upper()
-        if continuePlaying == 'N' or continuePlaying == 'Y':
-            break
-
-        else:
-            print('Invalid input! Please try again')
-            continue
-
-    if continuePlaying == 'Y':
-        continue
-    else:
-        break
+    if continue_playing() != 'Y': break
 
 print('Thank you for playing :)')
-
