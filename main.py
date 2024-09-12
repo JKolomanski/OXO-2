@@ -18,6 +18,8 @@ def display_board(board):
 
         if row != board[2]: # Don't print the dividing lines after the last row
             print('--+---+--')
+        # There exists an edgecase which can break this part of the code and the lines won't display properly,
+        # can think of what it is?
     print()
 
 
@@ -78,7 +80,6 @@ while True:
         # If the input given is invalid the loop will be repeated
         except ValueError: # Is executed only if an error has been thrown (could be done with an if statement aswell)
             print('Invalid input!')
-            continue
     
     display_board(board)
     if check_result(board):
@@ -93,7 +94,6 @@ while True:
 
         except ValueError:
             print('Invalid input!')
-            continue
 
 # Display the result message
 print()

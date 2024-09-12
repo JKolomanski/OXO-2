@@ -138,8 +138,10 @@ def continue_playing():
     while True:
 
         continuePlaying = input('Do you want to play again? (Y/N): ').upper()
-        if continuePlaying == 'N' or continuePlaying == 'Y':
-            return continue_playing
+        if continuePlaying == 'Y':
+            return True
+        elif continuePlaying == 'N':
+            return False
 
         else:
             print('Invalid input! Please try again')
@@ -204,6 +206,6 @@ while True:
     else:
         print(f"Player {check_result(board)} won!")
 
-    if continue_playing() != 'Y': break
+    if not continue_playing(): break
 
 print('Thank you for playing :)')
