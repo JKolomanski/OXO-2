@@ -121,8 +121,8 @@ def handle_input(board, player):
 # Modify the state of the board randomly
 def computer_move(board, player):
     # Choose a random index for a row, then for a column, check if the chosen cell is empty,
-    # if not, try again (This is a crude way of doing things that may couse the loop to run repeatedly
-    # for no good reason, can you think of a better way of doing this?)
+    # if not, try again (This is a crude way of doing things that may cause the loop to run repeatedly
+    # for no good reason, can you think of a better way?)
     while True:
         choiceRow = randint(0, 2)
         choiceCol = randint(0, 2)
