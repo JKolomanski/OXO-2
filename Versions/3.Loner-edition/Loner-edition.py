@@ -100,13 +100,15 @@ def handle_input(board, player):
     # Loop to keep asking the user for input until correct one is given
     while True:
         try:
-            move = int(input(f'player {player}, make your move (1-9): '))
+            move = input(f'Player {player}, make your move (1-9): ')
+            if int(move) > 9 or int(move) < 1:
+                raise ValueError
             board = write_to_board(move, board, board_template, player)
             break # Break out of the loop if a correct input is given
 
         # If the input given is invalid the loop will be repeated
 
-        # Custom messages for different incorrect inputs
+        # Custom messages for different incorrect inputs (Improvement 4)
         except ValueError:
             print(f"Invalid input: spot '{move}' doesn't exist, you fool!")
 
