@@ -18,17 +18,16 @@ def get_starting_player():
     while True:
         starting = input('Which player should start the game? (X/O): ').upper() # the upper method converts all letters in a string to uppercase
 
-        if starting != 'X' and starting != 'O':
-            print("Invalid player (please type 'X' or 'O' and press Enter)")
-
-        else:
+        if starting == 'X' or starting == 'O':
             return starting
+        
+        print("Invalid player (please type 'X' or 'O' and press Enter)")
 
 
 # Display the current state of the board in terminal
 def display_board(board):
     print()
-    for rowIndex in range(len(board)):
+    for rowIndex in range(3):
         print(f'{board[rowIndex][0]} | {board[rowIndex][1]} | {board[rowIndex][2]}')
 
         if rowIndex < 2: # Don't print the dividing lines after the last row

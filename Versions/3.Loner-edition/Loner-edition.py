@@ -18,10 +18,11 @@ def gamemode_selection():
 
         if choice == '1':
             return 'multiplayer'
+        
         elif choice == '2':
             return 'singleplayer'
-        else:
-            print("incorrect input, please type: '1' or '2' and press Enter")
+        
+        print("incorrect input, please type: '1' or '2' and press Enter")
 
 
 # Ask which player the human should be
@@ -31,8 +32,8 @@ def get_human_player():
 
         if player == 'X' or player == 'O':
             return player
-        else:
-            print("Invalid player (please type 'X' or 'O' and press Enter)")
+        
+        print("Invalid player (please type 'X' or 'O' and press Enter)")
         
 
 # Ask who should start tha game
@@ -40,10 +41,10 @@ def get_starting_player():
     while True:
         starting = input('Which player should start the game? (X/O): ').upper() # the upper method converts all letters in a string to uppercase
 
-        if starting != 'X' and starting != 'O':
-            print("Invalid player (please type 'X' or 'O' and press Enter)")
-        else:
+        if starting == 'X' or starting == 'O':
             return starting
+        
+        print("Invalid player (please type 'X' or 'O' and press Enter)")
 
 
 # Display the current state of the board in terminal
