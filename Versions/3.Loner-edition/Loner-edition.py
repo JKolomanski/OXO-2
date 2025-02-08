@@ -36,7 +36,7 @@ def get_human_player():
         print("Invalid player (please type 'X' or 'O' and press Enter)")
         
 
-# Ask who should start tha game
+# Ask who should start the game
 def get_starting_player():
     while True:
         starting = input('Which player should start the game? (X/O): ').upper() # the upper method converts all letters in a string to uppercase
