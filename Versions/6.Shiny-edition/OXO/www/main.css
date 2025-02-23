@@ -1,0 +1,95 @@
+:root {
+  --background-color: #100606;
+  --highlight-color: #562c1e;
+  --text-color: #ffffff;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers the content horizontally */
+  align-items: center; /* Aligns the content at the bottom */
+  height: 100vh; /* Ensures the body takes up full viewport height */
+  margin: 0; /* Removes default margin */
+  
+  background-image: url("assets/layered-waves-haikei-2.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.bottomText {
+  margin: 20px;
+  color: var(--background-color);
+}
+
+h1 {
+  color: var(--text-color);
+}
+
+.topDiv {
+  display: flex;
+  flex-direction: column; /* Stacks elements vertically */
+  justify-content: flex-start; /* Aligns items to the top */
+  align-items: center; /* Centers items horizontally */
+  height: 100%; /* Optional: Ensures the div takes full height if necessary */
+}
+
+.buttonsDiv {
+  
+}
+
+button {
+  margin: 10px;
+}
+
+/* From Uiverse.io by WhiteNervosa */ 
+button {
+  font-size: 18px;
+  color: #e1e1e1;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: color;
+}
+
+button:focus,
+button:hover {
+  color: #fff;
+}
+
+button:focus:after,
+button:hover:after {
+  width: 100%;
+  left: 0%;
+}
+
+button:after {
+  content: "";
+  pointer-events: none;
+  bottom: -2px;
+  left: 50%;
+  position: absolute;
+  width: 0%;
+  height: 3px;
+  background-color: var(--highlight-color);
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 300ms;
+  transition-property: width, left;
+}
+
+.bottomDiv {
+  display: flex;
+  flex-direction: column; /* Stacks elements vertically */
+  justify-content: flex-end; /* Aligns items to the top */
+  align-items: center; /* Centers items horizontally */
+  height: 100%; /* Optional: Ensures the div takes full height if necessary */
+}
