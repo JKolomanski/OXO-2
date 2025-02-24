@@ -12,10 +12,23 @@ ui <- htmlTemplate(
       <h1>☰☰☰ OXO ☰☰☰</h1>
       
       <div class='buttonsDiv'>
-      <button id='myButton'>Play</button>
-      <button id='myButton'>Stats</button>
-      <button id='myButton'>About</button>
+      <button id='myButton' class='pageButton'>About</button>
+      <button id='myButton' class='pageButton'>Play</button>
+      <button id='myButton' class='pageButton'>Plots</button>
       </div>
+      
+      <dic class='fieldDiv'>
+          <button class='grid-button'>X</button>
+          <button class='grid-button'>O</button>
+          <button class='grid-button'>X</button>
+          <button class='grid-button'>O</button>
+          <button class='grid-button'>X</button>
+          <button class='grid-button'>O</button>
+          <button class='grid-button'>X</button>
+          <button class='grid-button'>O</button>
+          <button class='grid-button'>X</button>
+      </div>
+      
     </div>
     
     <div class='bottomDiv'>

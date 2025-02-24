@@ -1,7 +1,11 @@
 :root {
   --background-color: #100606;
+  --foreground-color: #230d0e;
   --highlight-color: #562c1e;
   --text-color: #ffffff;
+  --inactive-color: #e1e1e1;
+  --X-color: #b26d33;
+  --O-color: #648fcb;
 }
 
 body {
@@ -37,18 +41,18 @@ h1 {
   height: 100%; /* Optional: Ensures the div takes full height if necessary */
 }
 
+/* Page button stuff */ 
 .buttonsDiv {
   
 }
 
-button {
+.pageButton {
   margin: 10px;
 }
 
-/* From Uiverse.io by WhiteNervosa */ 
-button {
+.pageButton {
   font-size: 18px;
-  color: #e1e1e1;
+  color: var(--inactive-color);
   font-family: inherit;
   font-weight: 800;
   cursor: pointer;
@@ -61,18 +65,18 @@ button {
   transition-property: color;
 }
 
-button:focus,
-button:hover {
-  color: #fff;
+.pageButton:focus,
+.pageButton:hover {
+  color: var(--text-color);
 }
 
-button:focus:after,
-button:hover:after {
+.pageButton:focus:after,
+.pageButton:hover:after {
   width: 100%;
   left: 0%;
 }
 
-button:after {
+.pageButton:after {
   content: "";
   pointer-events: none;
   bottom: -2px;
@@ -84,6 +88,33 @@ button:after {
   transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
   transition-duration: 300ms;
   transition-property: width, left;
+}
+
+/* Stuff for the game field */
+.fieldDiv {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+    justify-content: center;
+    margin-top: 80px;
+    
+    background-color: var(--foreground-color);
+}
+.grid-button {
+    width: 100px;
+    height: 100px;
+    background-color: var(--background-color);
+    color: var(--background-color);
+    font-size: 64px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.grid-button:hover {
+    color: var(--foreground-color);
 }
 
 .bottomDiv {
