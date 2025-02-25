@@ -13,7 +13,7 @@ function(input, output, session) {
   
   # Set the beggining value of game text
   output$game_txt <- renderText({
-    "Player X begins!"
+    "Please select the starting player and begin the game"
   })
   
   board = reactiveVal(matrix(c('1', '2', '3', '4', '5', '6', '7', '8', '9'), nrow = 3, ncol = 3, byrow = TRUE))
@@ -101,11 +101,28 @@ function(input, output, session) {
   }
   
   
-  # Disable all buttons
-  disable_all = function() {
+  # Apply a function to all buttons
+  apply_all_buttons = function(func) {
     lapply(paste0("btn", 1:9), function(btn_id) {
-      disable(btn_id)
+      func(btn_id)
     })
+  }
+  
+  
+  # Reset the whole game
+  reset = function() {
+    apply_all_buttons(enable)
+    
+    clear_label = function(btn_id) {
+      updateActionButton(session, btn_id, label = '')
+    }
+    
+    apply_all_buttons(clear_label)
+    board(matrix(c('1', '2', '3', '4', '5', '6', '7', '8', '9'), nrow = 3, ncol = 3, byrow = TRUE))
+    selected_player = input$starting_option
+    player(substring(selected_player, nchar(selected_player), nchar(selected_player)))
+    result(NULL)
+    change_game_txt()
   }
   
   
@@ -125,7 +142,7 @@ function(input, output, session) {
     change_game_txt()
     
     if (!is.null(result())) {
-      disable_all()
+      apply_all_buttons(disable)
     }
   }
   
@@ -137,4 +154,11 @@ function(input, output, session) {
       button_click(btn_id, player())
     })
   })
+  
+  observeEvent(input$btn_start, {
+    updateActionButton(session, 'btn_start', label = 'RESET')  # Change the button label
+    reset()
+  })
+  
+  apply_all_buttons(disable)
 }
