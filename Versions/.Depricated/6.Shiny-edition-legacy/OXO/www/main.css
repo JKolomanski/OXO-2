@@ -91,7 +91,7 @@ h1 {
 }
 
 /* Stuff for the game field */
-.fieldDiv {
+.gridDiv {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
@@ -113,8 +113,19 @@ h1 {
     justify-content: center;
     cursor: pointer;
 }
+
+.grid-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 64px;
+    color: var(--background-color);
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
 .grid-button:hover {
-    color: var(--foreground-color);
+    color: var(--foreground-color-color);
 }
 
 .bottomDiv {
