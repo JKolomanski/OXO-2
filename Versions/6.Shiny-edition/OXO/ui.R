@@ -49,9 +49,16 @@ navbarPage(
   
   tabPanel("About",
            fluidPage(
-             titlePanel("About"),
-             textInput("name", "Podaj swoje imię:", ""),
-             actionButton("start", "Rozpocznij grę")
+             titlePanel("About OXO"),
+             p("OXO 2: Shiny edition is a simple tic-tac-toe game
+               in the form of a web app built with Shiny."),
+             
+             p("It's a part of a bigger project 
+               focused on making different versions of this simple game 
+               with different technologies. "),
+             
+             tags$a(href = "https://github.com/JKolomanski/OXO-2", "GitHub repo", target = "_blank")
+             
            )
   ),
   
