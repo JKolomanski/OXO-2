@@ -35,12 +35,14 @@ navbarPage(
                actionButton("btn9", "", style = "width:80px; height:80px; font-size: 24px; margin: 5px;")
            ),
                
-           div(style = "display: flex; margin-top: 30px;",
-           selectInput("starting_option", "Starting Player:", 
+           div(style = "display: flex; margin-top: 60px;",
+               selectInput("starting_option", "Starting Player:", 
                        choices = c("Player X", "Player O"), 
                        selectize = FALSE, width = "125px"),
-           actionButton("btn_start", "START", style = "width:125px; height:34px; font-size: 12px; margin: 5px; margin-top: 25px;margin-right: 1px;")
+               actionButton("btn_start", "START", style = "width:125px; height:34px; font-size: 12px; margin: 5px; margin-top: 25px;margin-right: 1px;")
            ),
+           
+
 
            
              )
@@ -67,5 +69,12 @@ navbarPage(
              titlePanel("Plots"),
              p("WORK IN PROGRESS")
            )
+  ),
+  
+  div(style = "position: absolute; bottom: 0; left: 50%; width: 250px; transform: translateX(-58%); text-align: center; margin: 20px;", 
+      hr(),
+      tags$a(href = 'https://jkolomanski.github.io', 
+             'Jakub Kołomański | MMXXV', target = '_blank'),
+      
   )
 )
