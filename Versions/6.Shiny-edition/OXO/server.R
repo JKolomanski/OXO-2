@@ -109,6 +109,22 @@ function(input, output, session) {
   }
   
   
+  # Change the color of button text according to player
+  change_btn_color = function(btn_id) {
+    current_player = player()
+    
+    if (current_player == 'X') {
+      color = '#f7913b'
+    } else {
+      color = '#3e8bf7'
+    }
+    
+    js_code = paste0("document.getElementById('", btn_id, "').style.color = '", color, "';")
+    runjs(js_code)
+    
+  }
+  
+  
   # Reset the whole game
   reset = function() {
     apply_all_buttons(enable)
@@ -129,6 +145,7 @@ function(input, output, session) {
   # Handle press of the game buttons
   button_click = function(btn_id, player) {
     updateActionButton(session, btn_id, label = player)  # Change the button label
+    change_btn_color(btn_id)
     
     write_to_board(substring(btn_id, nchar(btn_id), nchar(btn_id)), player)
     print(board) # REMOVE ME LATER
