@@ -67,8 +67,9 @@ navbarPage(
   tabPanel("Plots",
            fluidPage(
              titlePanel("Plots"),
-             div(style = "display: flex;",
+             div(style = "display: flex; margin: 5%; margin-top: 8%",
                plotOutput("wins_plot"),
+               div(style = "width: 10%;"),
                plotOutput("starts_plot")
              )
            )

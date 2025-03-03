@@ -150,11 +150,18 @@ function(input, output, session) {
       data_long = data.frame(Player = rownames(current_player_data), Value = current_player_data[[type]])
       
       ggplot(data_long, aes(x = Player, y = Value, fill = Player)) +
-        geom_bar(stat = "identity") + 
+        geom_bar(stat = "identity", width = 0.5) + 
         labs(title = paste('Number of', type), x = "Player", y = type) +
         theme_minimal() +
         scale_fill_manual(values = c("X" = "#b26c33", "O" = "#648fcb")) +
-        scale_y_continuous(breaks = seq(0, max(data_long$Value, na.rm = TRUE), by = 1))
+        scale_y_continuous(breaks = seq(0, max(data_long$Value, na.rm = TRUE), by = 1)) +
+        theme(
+          plot.title = element_text(size = 20, face = "bold"),
+          axis.title = element_text(size = 16),                
+          axis.text = element_text(size = 14),                 
+          legend.title = element_text(size = 14),              
+          legend.text = element_text(size = 12)                 
+        )
     })
   }
   
