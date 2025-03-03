@@ -67,7 +67,10 @@ navbarPage(
   tabPanel("Plots",
            fluidPage(
              titlePanel("Plots"),
-             plotOutput("wins_plot")
+             div(style = "display: flex;",
+               plotOutput("wins_plot"),
+               plotOutput("starts_plot")
+             )
            )
   ),
   

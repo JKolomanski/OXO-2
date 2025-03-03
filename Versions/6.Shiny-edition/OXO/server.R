@@ -1,10 +1,10 @@
-####################################################################
-#                                                                  #
-# OXO 2: Shiny edition                                             #
-# A web app written with shiny  with some additional functionality #
-# currently W.I.P                                                  #
-#                                                                  #
-####################################################################
+###################################################################
+#                                                                 #
+# OXO 2: Shiny edition                                            #
+# A web app written with shiny with some additional functionality #
+# currently W.I.P                                                 #
+#                                                                 #
+###################################################################
 
 library(shiny)
 library(shinyjs)
@@ -21,6 +21,7 @@ function(input, output, session) {
   player = reactiveVal('X')
   result = reactiveVal(NULL)
   player_data = reactiveVal(read.csv("player_data.csv", header = TRUE, row.names = 1))
+  starting_player = reactiveVal(NULL)
   
   
   # Write the move to the board
@@ -130,14 +131,32 @@ function(input, output, session) {
   # Save the data about the game to files
   save_result = function() {
     current_player = player()
+    current_starting_player = starting_player()
     data = player_data()
     
     data[current_player, "wins"] = data[current_player, "wins"] + 1
-    player_data(data)
+    data[current_starting_player, "starts"] = data[current_starting_player, "starts"] + 1
     
+    player_data(data)
     write.csv(data, "player_data.csv", row.names = TRUE)
   }
     
+  
+  # Render plots
+  render_plots = function(type) {
+    renderPlot({
+      current_player_data = player_data()
+
+      data_long = data.frame(Player = rownames(current_player_data), Value = current_player_data[[type]])
+      
+      ggplot(data_long, aes(x = Player, y = Value, fill = Player)) +
+        geom_bar(stat = "identity") + 
+        labs(title = paste('Number of', type), x = "Player", y = type) +
+        theme_minimal() +
+        scale_fill_manual(values = c("X" = "#b26c33", "O" = "#648fcb")) +
+        scale_y_continuous(breaks = seq(0, max(data_long$Value, na.rm = TRUE), by = 1))
+    })
+  }
   
   
   # Reset the whole game
@@ -187,24 +206,21 @@ function(input, output, session) {
     })
   })
   
+  
   # Behaviour of the start / reset button
   observeEvent(input$btn_start, {
     updateActionButton(session, 'btn_start', label = 'RESET')  # Change the button label
     reset()
+    starting_player(player())
   })
   
-  # Disable all game button at the beggining
+  
+  # Disable all game buttons at the beggining
   apply_all_buttons(disable)
   
+  
   # Render the plots
-  output$wins_plot = renderPlot({
-    data_long = data.frame(Player = rownames(player_data()), Wins = player_data()$wins)
-    
-    ggplot(data_long, aes(x = Player, y = Wins, fill = Player)) +
-      geom_bar(stat = "identity") + 
-      labs(title = "Number of victories", x = "Player", y = "Victories") +
-      theme_minimal() +
-      scale_fill_manual(values = c("X" = "#b26c33", "O" = "#648fcb")) +
-      scale_y_continuous(breaks = seq(0, max(data_long$Wins), by = 1))  
-  })
+  output$wins_plot = render_plots("wins")
+  output$starts_plot = render_plots("starts")
+  
 }
