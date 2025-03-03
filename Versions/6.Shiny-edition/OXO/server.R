@@ -8,17 +8,19 @@
 
 library(shiny)
 library(shinyjs)
+library(ggplot2)
 
 function(input, output, session) {
   
   # Set the beggining value of game text
-  output$game_txt <- renderText({
+  output$game_txt = renderText({
     "Please select the starting player and begin the game"
   })
   
   board = reactiveVal(matrix(c('1', '2', '3', '4', '5', '6', '7', '8', '9'), nrow = 3, ncol = 3, byrow = TRUE))
   player = reactiveVal('X')
   result = reactiveVal(NULL)
+  player_data = reactiveVal(read.csv("player_data.csv", header = TRUE, row.names = 1))
   
   
   # Write the move to the board
@@ -125,6 +127,19 @@ function(input, output, session) {
   }
   
   
+  # Save the data about the game to files
+  save_result = function() {
+    current_player = player()
+    data = player_data()
+    
+    data[current_player, "wins"] = data[current_player, "wins"] + 1
+    player_data(data)
+    
+    write.csv(data, "player_data.csv", row.names = TRUE)
+  }
+    
+  
+  
   # Reset the whole game
   reset = function() {
     apply_all_buttons(enable)
@@ -148,23 +163,23 @@ function(input, output, session) {
     change_btn_color(btn_id)
     
     write_to_board(substring(btn_id, nchar(btn_id), nchar(btn_id)), player)
-    print(board) # REMOVE ME LATER
+    
+    result(check_result())
+    
+    if (!is.null(result())) {
+      apply_all_buttons(disable)
+      save_result()
+    }
     
     swap_player()
     
     disable(btn_id)
-    
-    result(check_result())
-    print(result)
     change_game_txt()
     
-    if (!is.null(result())) {
-      apply_all_buttons(disable)
-    }
   }
   
   
-  # apply the button_click to all game buttons
+  # Behaviour of the game buttons
   lapply(paste0("btn", 1:9), function(btn_id) {
     observeEvent(input[[btn_id]], {
 
@@ -172,10 +187,24 @@ function(input, output, session) {
     })
   })
   
+  # Behaviour of the start / reset button
   observeEvent(input$btn_start, {
     updateActionButton(session, 'btn_start', label = 'RESET')  # Change the button label
     reset()
   })
   
+  # Disable all game button at the beggining
   apply_all_buttons(disable)
+  
+  # Render the plots
+  output$wins_plot = renderPlot({
+    data_long = data.frame(Player = rownames(player_data()), Wins = player_data()$wins)
+    
+    ggplot(data_long, aes(x = Player, y = Wins, fill = Player)) +
+      geom_bar(stat = "identity") + 
+      labs(title = "Number of victories", x = "Player", y = "Victories") +
+      theme_minimal() +
+      scale_fill_manual(values = c("X" = "#b26c33", "O" = "#648fcb")) +
+      scale_y_continuous(breaks = seq(0, max(data_long$Wins), by = 1))  
+  })
 }

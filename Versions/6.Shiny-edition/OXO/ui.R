@@ -67,7 +67,7 @@ navbarPage(
   tabPanel("Plots",
            fluidPage(
              titlePanel("Plots"),
-             p("WORK IN PROGRESS")
+             plotOutput("wins_plot")
            )
   ),
   
