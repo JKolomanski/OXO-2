@@ -71,9 +71,7 @@ def get_coordinates(move: str, template: tuple, i: int = 0) -> tuple:
     """
     try: 
         return (i, template[i].index(move))
-        # COORDS = (i, template[i].index(move))
-        # if check_coordinates(COORDS):
-        #     return COORDS
+    
     except ValueError: 
         return get_coordinates(move, template, i+1)
 
