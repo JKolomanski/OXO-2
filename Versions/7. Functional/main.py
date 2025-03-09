@@ -1,6 +1,6 @@
 """
     OXO 2: Functional
-    Loner edition wrtten following
+    Loner edition written following
     the functional programming paradigm
     uses some more advanced techniques
 """

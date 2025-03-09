@@ -3,12 +3,12 @@ from itertools import chain
 
 def generate_template() -> tuple:
     """Get the base board template"""
-    return (('1', '2', '3'), ('4', '5', '6'), ('7', '8', '9'))
+    return ('1', '2', '3'), ('4', '5', '6'), ('7', '8', '9')
 
 
 def generate_board() -> tuple:
     """Get an empty board"""
-    return ((' ', ' ', ' '), (' ', ' ', ' '), (' ', ' ', ' '))
+    return (' ', ' ', ' '), (' ', ' ', ' '), (' ', ' ', ' ')
 
 
 def check_row(row: tuple) -> str | None:
@@ -53,8 +53,8 @@ def check_result(board: tuple) -> str:
 def flatten(tup: tuple[tuple]) -> tuple:
     """
         Flattens a tuple of nested tuples into a single tuple
-        :param tup: A 2-dimentional tuple
-        :return: The flatened tuple
+        :param tup: A 2-dimensional tuple
+        :return: The flattened tuple
     """
     return tuple(chain(*tup))
 
@@ -65,7 +65,7 @@ def get_coordinates(move: str, template: tuple, i: int = 0) -> tuple:
         cell number within the provided board template.
 
         :param move: The number string corresponding to the cell
-        :param template: The board template conaining cell numbers
+        :param template: The board template containing cell numbers
         :param i: The current row index being checked (default is 0), used for recursion
         :return: A tuple (row_index, col_index) representing the coordinates
     """

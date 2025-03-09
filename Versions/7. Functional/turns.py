@@ -10,7 +10,7 @@ def player_turn(board: tuple, template: tuple, player: str) -> str:
         Handle player's turn. Get input and return the new state of the board
 
         :param board: The board to be modified
-        :param template: The template of availale moves
+        :param template: The template of available moves
         :param player: The symbol of the current player
     """
     COORDS = get_coordinates(get_user_input(flatten(template), f'Player {player}, make your move!'), template)
@@ -23,7 +23,7 @@ def ai_turn(board: tuple, template: tuple, player: str) -> str:
         Handle computer's turn. Get the move and return the new state of the board
 
         :param board: The board to be modified
-        :param template: The template of availale moves
+        :param template: The template of available moves
         :param player: The symbol of the current player
     """
     MOVE = choice(tuple(filter(bool, flatten(template))))

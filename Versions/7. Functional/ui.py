@@ -5,9 +5,9 @@ def validate_input(valid_inputs: tuple, user_input: str) -> bool:
 
 def get_user_input(valid_inputs: tuple, message: str) -> str:
     """
-        Get an input from user, if it's not valid, ask again untill correct string is given
+        Get an input from user, if it's not valid, ask again until correct string is given
 
-        :param valid_inputs: A tuple of strings that containins all the correct inputs the user can make
+        :param valid_inputs: A tuple of strings that contains all the correct inputs the user can make
         :param message: The message to ask the user for input
         :return: The input string from user
     """
@@ -62,7 +62,7 @@ def get_turn_order(starting_player: str, human_player: str, player_turn, ai_turn
     return FIRST_TURN, SECOND_TURN
 
 
-def main_menu(player_turn, ai_turn) -> None:
+def main_menu(player_turn, ai_turn) -> tuple:
     """Gets game mode and player choices, returning turn order."""
 
     clear_console()
