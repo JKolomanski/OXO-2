@@ -4,6 +4,7 @@ import json
 from PIL import Image
 import webbrowser
 
+
 from board import Board
 
 
@@ -32,10 +33,11 @@ class App(ctk.CTk):
         super().__init__(fg_color=settings['bg_color'])
         self.geometry(f'{settings["window_width"]}x{settings["window_height"]}')
         ctk.set_appearance_mode("light")
-        # self.resizable(False, False)
+        self.resizable(False, False)
         self.title('OXO 2')
 
         # Initialize all ui components
+
         self.logo = OXOLogo(self, 359, 93)
         self.about_frame = AboutFrame(parent=self)
         self.settings_frame = SettingsFrame(parent=self)
@@ -90,7 +92,7 @@ class MainMenuFrame(AppFrame):
         self.play_button = Button(self.button_frame, 'Play', self.button_size, command=lambda: self.change_frame(parent.play_frame))
         self.settings_button = Button(self.button_frame, 'Settings', self.button_size, command=lambda: self.change_frame(parent.settings_frame))
         self.about_button = Button(self.button_frame, 'About', self.button_size, command=lambda: self.change_frame(parent.about_frame))
-        self.Quit_button = Button(self.button_frame, 'Quit', self.button_size, command=self.parent.destroy)
+        self.quit_button = Button(self.button_frame, 'Quit', self.button_size, command=self.parent.destroy)
 
         self.button_frame.pack(pady=(20, 0))
         self.pack(expand=True, fill="both", pady=(5, 5), padx=(5, 5))
@@ -146,7 +148,7 @@ class PlayFrame(AppFrame):
     def __init__(self, parent):
         self.parent = parent
         self.board = Board()
-        self.starting_player = 'X'
+        self.starting_player = 'O'
         self.player = self.starting_player
         super().__init__(self.parent)
 
@@ -162,7 +164,7 @@ class PlayFrame(AppFrame):
 
         # Title label
         self.title_label = ctk.CTkLabel(self,
-                                        text=f'Player {self.starting_player} starts the game!',
+                                        text=f'Player {self.starting_player} ,start the game!',
                                         font=(settings['font'], 16, 'bold'),
                                         text_color=settings['dark_bg_color'])
         self.title_label.pack()
@@ -231,7 +233,7 @@ class PlayFrame(AppFrame):
         self.player = self.starting_player
 
         for button in self.buttons:
-            button.configure(state='enabled', text='')
+            button.configure(state='enabled', text='', image=None)
 
         self.title_label.configure(text=f'Player {self.starting_player} starts the game!')
 
@@ -243,7 +245,8 @@ class PlayFrame(AppFrame):
         :param symbol: The symbol of the current player
         """
         self.board.update(move, symbol)
-        self.buttons[int(move) - 1].configure(text=symbol, state='disabled')
+        image = ctk.CTkImage(Image.open(f'Assets/{symbol}_symbol.png'), size=(64, 64))
+        self.buttons[int(move) - 1].configure(text='', state='disabled', image=image)
         if not self.check_result():
             self.swap_player()
             self.title_label.configure(text=f'Player {self.player}, make your move!')
@@ -314,11 +317,15 @@ class BoardButton(ctk.CTkButton):
         super().__init__(self.parent,
                          text=self.text,
                          fg_color=settings['bg_color'],
-                         hover_color=settings['gray'],
+                         hover_color=settings['bg_color'],
                          corner_radius=0,
                          width=90,
                          height=90,
                          text_color=settings['dark_bg_color'],
                          font=(settings['font'], 64),
                          command=self.command)
+
+        # self.bind("<Enter>", lambda event: self.configure(text=parent.player, text_color=settings['gray']))
+        # self.bind("<Leave>", lambda event: self.configure(text=''))
+
         self.grid(row=self.row, column=self.col)
