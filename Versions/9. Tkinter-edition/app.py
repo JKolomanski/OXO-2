@@ -219,7 +219,7 @@ class PlayFrame(AppFrame):
             self.title_label.configure(text='It\'s a tie!')
 
         # One of the players won
-        else:
+        elif result:
             self.title_label.configure(text=f'Player {result} won!')
             self.lock_board_buttons()
 
