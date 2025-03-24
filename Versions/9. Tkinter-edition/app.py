@@ -3,12 +3,13 @@ import json
 # import tkinter as tk
 from PIL import Image
 import webbrowser
+from random import choice
 
 
 from board import Board
 
 
-def get_settings():
+def get_settings() -> dict:
     """
     Load the settings.json file and return it as a dictionary
 
@@ -34,7 +35,7 @@ class App(ctk.CTk):
         self.geometry(f'{settings["window_width"]}x{settings["window_height"]}')
         ctk.set_appearance_mode("light")
         self.resizable(False, False)
-        self.title('OXO 2')
+        self.title(f'OXO{self.get_random_splash()}')
 
         # Initialize all ui components
 
@@ -59,6 +60,17 @@ class App(ctk.CTk):
         self.bottom_text.bind("<Enter>", lambda event: self.bottom_text.configure(font=(settings['font'], 13, 'underline')))
         self.bottom_text.bind("<Leave>", lambda event: self.bottom_text.configure(font=(settings['font'], 13)))
         self.bottom_text.pack(side='bottom', pady=(0, 5))
+
+    @ staticmethod
+    def get_random_splash() -> str:
+        """
+        Load the splashes.txt file and return a random line
+
+        :return: a randomly chosen line with the end-line character stripped (str)
+        """
+        with open('splashes.txt') as f:
+            splashes = f.readlines()
+            return choice(splashes).strip('\n')
 
 
 class AppFrame(ctk.CTkFrame):
@@ -183,7 +195,7 @@ class PlayFrame(AppFrame):
         self.create_grid()
         self.board_frame.pack(pady=(10, 6), padx=(10, 10))
 
-    def create_grid(self):
+    def create_grid(self) -> None:
         """Creates the grid of buttons connected to board cells"""
         for i in range(len(self.board.state)):
             self.board_frame.rowconfigure(i, weight=1, uniform='grid')
@@ -195,17 +207,17 @@ class PlayFrame(AppFrame):
 
                 self.buttons.append(button)
 
-    def swap_player(self):
+    def swap_player(self) -> None:
         """Swap the current player"""
         if self.player == 'X': self.player = 'O'
         else: self.player = 'X'
 
-    def lock_board_buttons(self):
+    def lock_board_buttons(self) -> None:
         """disable all board buttons"""
         for button in self.buttons:
             button.configure(state='disabled')
 
-    def check_result(self):
+    def check_result(self) -> str:
         """
         Check the result of the game and change the title label correspondingly
 
@@ -227,7 +239,7 @@ class PlayFrame(AppFrame):
 
         return result
 
-    def reset_board(self):
+    def reset_board(self) -> None:
         """Enable all board buttons and reset their labels"""
         self.board = Board()
         self.player = self.starting_player
@@ -237,7 +249,7 @@ class PlayFrame(AppFrame):
 
         self.title_label.configure(text=f'Player {self.starting_player} starts the game!')
 
-    def make_move(self, move, symbol):
+    def make_move(self, move, symbol) -> None:
         """
         Handle the pressings of a board button by the current player
 
@@ -321,11 +333,12 @@ class BoardButton(ctk.CTkButton):
                          corner_radius=0,
                          width=90,
                          height=90,
-                         text_color=settings['dark_bg_color'],
-                         font=(settings['font'], 64),
+                         text_color=settings['gray'],
+                         font=(settings['font'], 32),
                          command=self.command)
 
-        # self.bind("<Enter>", lambda event: self.configure(text=parent.player, text_color=settings['gray']))
+        # image = ctk.CTkImage(Image.open(f'Assets/{self.parent.master.player}_symbol_grayscale.png'), size=(64, 64))
+        # self.bind("<Enter>", lambda event: self.configure(text='■'))
         # self.bind("<Leave>", lambda event: self.configure(text=''))
 
         self.grid(row=self.row, column=self.col)
