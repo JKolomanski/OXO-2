@@ -1,28 +1,9 @@
-import customtkinter as ctk
-import json
 # import tkinter as tk
-from PIL import Image
 import webbrowser
 from random import choice
 
-
 from board import Board
-
-
-def get_settings() -> dict:
-    """
-    Load the settings.json file and return it as a dictionary
-
-    :return: The settings.json as a dict
-    """
-    with open('settings.json', 'r') as f:
-        data = json.load(f)
-        data["window_width"] = int(data["window_width"])
-        data["window_height"] = int(data["window_height"])
-        return data
-
-
-settings = get_settings()
+from ui_elements import *
 
 
 class App(ctk.CTk):
@@ -39,9 +20,11 @@ class App(ctk.CTk):
 
         # Initialize all ui components
 
+        self.game_active = False
         self.logo = OXOLogo(self, 359, 93)
         self.about_frame = AboutFrame(parent=self)
         self.settings_frame = SettingsFrame(parent=self)
+        self.game_creation_frame = GameCreationFrame(parent=self)
         self.play_frame = PlayFrame(parent=self)
         self.main_menu_frame = MainMenuFrame(parent=self)
         self.main_menu_frame.pack_propagate(False)
@@ -73,25 +56,6 @@ class App(ctk.CTk):
             return choice(splashes).strip('\n')
 
 
-class AppFrame(ctk.CTkFrame):
-    """
-    Base class for all frames in the application.
-    Contains only the back button.
-    """
-    def __init__(self, parent: App):
-        self.parent = parent
-        super().__init__(self.parent, fg_color=settings["bg_color"])
-        self.button_frame = ctk.CTkFrame(self, fg_color=settings["bg_color"])
-
-    def change_frame(self, frame: 'AppFrame') -> None:
-        """
-        Switches to a different menu (frame) in the application
-
-        :param frame: The parent frame (App class)
-        """
-        frame.pack(expand=True, fill="both", pady=(5, 5), padx=(5, 5))
-        self.pack_forget()
-
 
 class MainMenuFrame(AppFrame):
     """Main menu screen containing navigation buttons"""
@@ -101,7 +65,8 @@ class MainMenuFrame(AppFrame):
         super().__init__(self.parent)
 
         # Initialise buttons for different sections
-        self.play_button = Button(self.button_frame, 'Play', self.button_size, command=lambda: self.change_frame(parent.play_frame))
+        self.play_button = Button(self.button_frame, 'Play', self.button_size,
+                                  command=lambda: self.change_frame(parent.game_creation_frame) if not self.parent.game_active else self.change_frame(parent.play_frame))
         self.settings_button = Button(self.button_frame, 'Settings', self.button_size, command=lambda: self.change_frame(parent.settings_frame))
         self.about_button = Button(self.button_frame, 'About', self.button_size, command=lambda: self.change_frame(parent.about_frame))
         self.quit_button = Button(self.button_frame, 'Quit', self.button_size, command=self.parent.destroy)
@@ -155,6 +120,65 @@ class SettingsFrame(AppFrame):
         self.title_label.pack()
 
 
+class PlayerSettingsFrame(ctk.CTkFrame):
+    def __init__(self, parent, player: str):
+        self.parent = parent
+        self.player = player
+        if player == '1':
+            self.symbols = ['X', 'O']
+            self.colors = ['orange', 'blue', 'green',
+                           'yellow', 'red', 'purple']
+        else:
+            self.symbols = ['O', 'X']
+            self.colors = ['blue', 'orange', 'green',
+                           'yellow', 'red', 'purple']
+
+        super().__init__(self.parent, fg_color=settings['bg_color'])
+
+
+        self.label = ctk.CTkLabel(self,
+                                        text=f'    Player {self.player}    ',
+                                        font=(settings['font'], 16, 'bold', 'underline'),
+                                        text_color=settings['dark_bg_color'])
+        self.label.pack()
+
+        self.symbol_label = ButtonTypeLabel(self, 'Symbol')
+        self.symbol_combobox = ComboBox(self, values=self.symbols)
+
+        self.type_label = ButtonTypeLabel(self, 'Player type')
+        self.type_combobox = ComboBox(self, values=['Human', 'Random AI'])
+
+        self.color_label = ButtonTypeLabel(self, 'Color')
+        self.color_combobox = ComboBox(self, values=self.colors)
+
+
+class GameCreationFrame(AppFrame):
+    """The frame for the menu before starting the game"""
+    def __init__(self, parent):
+        self.parent = parent
+        super().__init__(self.parent)
+
+        self.back_button = BackButton(self)
+        self.button_frame.pack(side='bottom', pady=(0, 5))
+
+        self.start_button = Button(self,
+                                    'START',
+                                    [200, 42],
+                                    command=self.start_game)
+
+        self.start_button.pack(side='bottom', pady=(0, 5))
+
+        self.player_1_frame = PlayerSettingsFrame(self, '1')
+        self.player_2_frame = PlayerSettingsFrame(self, '2')
+        self.player_1_frame.pack(side='left', expand=True, fill='y')
+        self.player_2_frame.pack(side='right', expand=True, fill='y')
+
+    def start_game(self):
+        self.parent.game_active = True
+        self.parent.play_frame.reset_board()
+        self.change_frame(self.parent.play_frame)
+
+
 class PlayFrame(AppFrame):
     """The frame for the tic-tac-toe game itself"""
     def __init__(self, parent):
@@ -166,13 +190,20 @@ class PlayFrame(AppFrame):
 
         # Reset button
         self.reset_button_frame = ctk.CTkFrame(self.button_frame, fg_color=settings['bg_color'])
-        self.reset_button_frame.pack(side='right', padx=(0, 75), fill='x')
+        self.reset_button_frame.pack(side='right', padx=(0, 90), fill='x')
         self.reset_button = Button(self.reset_button_frame, '⟳', [42, 42], command=self.reset_board)
 
         # Back button
         self.back_button = BackButton(self)
         self.back_button.place(relx=0.5, anchor="center", rely=0.5)
+        # self.button_frame.configure(fg_color='#666666')
         self.button_frame.pack(side='bottom', pady=(0, 5), anchor='center', fill='x', expand=True)
+
+        # Game settings button
+        self.settings_button_frame = ctk.CTkFrame(self.button_frame, fg_color=settings['bg_color'])
+        self.settings_button_frame.pack(side='left', padx=(90, 0), fill='x')
+        self.settings_button = Button(self.settings_button_frame, '⚙', [42, 42], command=self.back_to_game_settings)
+        # self.settings_button.pack()
 
         # Title label
         self.title_label = ctk.CTkLabel(self,
@@ -187,7 +218,7 @@ class PlayFrame(AppFrame):
                                         width=300,
                                         height=300,
                                         border_color=settings['bg_color'],
-                                        border_width=5,
+                                        border_width=8, # ADJUST ME LATER!!!!!!!
                                         corner_radius=0)
         self.board_frame.grid_propagate(False)
 
@@ -231,16 +262,19 @@ class PlayFrame(AppFrame):
         # Tie
         if result == 'FULL':
             self.title_label.configure(text='It\'s a tie!')
+            self.parent.game_active = False
 
         # One of the players won
         elif result:
             self.title_label.configure(text=f'Player {result} won!')
             self.lock_board_buttons()
+            self.parent.game_active = False
 
         return result
 
     def reset_board(self) -> None:
         """Enable all board buttons and reset their labels"""
+        self.parent.game_active = True
         self.board = Board()
         self.player = self.starting_player
 
@@ -248,6 +282,10 @@ class PlayFrame(AppFrame):
             button.configure(state='enabled', text='', image=None)
 
         self.title_label.configure(text=f'Player {self.starting_player} starts the game!')
+
+    def back_to_game_settings(self) -> None:
+        self.parent.game_active = False
+        self.change_frame(self.parent.game_creation_frame)
 
     def make_move(self, move, symbol) -> None:
         """
@@ -263,82 +301,3 @@ class PlayFrame(AppFrame):
             self.swap_player()
             self.title_label.configure(text=f'Player {self.player}, make your move!')
 
-
-class OXOLogo(ctk.CTkLabel):
-    """Class for the image of main game logo"""
-    def __init__(self, parent, width, height):
-        self.width = width
-        self.height = height
-        self.parent = parent
-        self.image = ctk.CTkImage(Image.open('Assets/oxo_logo.png'), size=(self.width, self.height))
-        super().__init__(self.parent, self.width, self.height, image=self.image, text='')
-        self.pack(pady=(30, 30))
-
-
-class Button(ctk.CTkButton):
-    """
-    Generic button class
-
-    :param parent: The parent this button belongs to
-    :param text: The text on the button
-    :param size: tuple[int, int] containing its width and height
-    :param command: a function to be executed on press
-    """
-    def __init__(self, parent, text, size: tuple[int, int], command):
-        self.parent = parent
-        self.text = text
-        self.command = command
-        self.size = size
-
-        super().__init__(self.parent,
-                         text=self.text,
-                         fg_color=settings['light_blue'],
-                         hover_color=settings['light_orange'],
-                         width=self.size[0],
-                         height=self.size[1],
-                         corner_radius=10,
-                         text_color=settings['bg_color'],
-                         font=(settings['font'], 16),
-                         command=self.command)
-        self.pack(pady=(10, 10))
-
-
-class BackButton(Button):
-    """Button that navigates to the main menu, inherits from Button"""
-    def __init__(self, parent):
-        super().__init__(parent.button_frame,
-                         'Back to title screen',
-                         [200, 42],
-                         command=lambda: parent.change_frame(parent.parent.main_menu_frame))
-
-class BoardButton(ctk.CTkButton):
-    """
-    Generic button class
-
-    :param parent: The parent this button belongs to
-    :param text: The text on the button
-    :command: a function to be executed on press
-    """
-    def __init__(self, parent, text, row, col, command):
-        self.parent = parent
-        self.text = text
-        self.command = command
-        self.row = row
-        self.col = col
-
-        super().__init__(self.parent,
-                         text=self.text,
-                         fg_color=settings['bg_color'],
-                         hover_color=settings['bg_color'],
-                         corner_radius=0,
-                         width=90,
-                         height=90,
-                         text_color=settings['gray'],
-                         font=(settings['font'], 32),
-                         command=self.command)
-
-        # image = ctk.CTkImage(Image.open(f'Assets/{self.parent.master.player}_symbol_grayscale.png'), size=(64, 64))
-        # self.bind("<Enter>", lambda event: self.configure(text='■'))
-        # self.bind("<Leave>", lambda event: self.configure(text=''))
-
-        self.grid(row=self.row, column=self.col)
