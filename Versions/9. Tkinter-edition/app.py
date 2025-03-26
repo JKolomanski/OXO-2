@@ -2,6 +2,7 @@
 import webbrowser
 from random import choice
 
+from players import HumanPlayer, AiPlayer
 from board import Board
 from ui_elements import *
 
@@ -184,8 +185,9 @@ class PlayFrame(AppFrame):
     def __init__(self, parent):
         self.parent = parent
         self.board = Board()
-        self.starting_player = 'O'
-        self.player = self.starting_player
+        self.player_1 = self.create_player('X', 'Human')
+        self.player_2 = self.create_player('O', 'Random AI')
+        self.player = self.player_1
         super().__init__(self.parent)
 
         # Reset button
@@ -207,7 +209,7 @@ class PlayFrame(AppFrame):
 
         # Title label
         self.title_label = ctk.CTkLabel(self,
-                                        text=f'Player {self.starting_player} ,start the game!',
+                                        text=f'Player {self.player_1.symbol} ,start the game!',
                                         font=(settings['font'], 16, 'bold'),
                                         text_color=settings['dark_bg_color'])
         self.title_label.pack()
@@ -226,6 +228,8 @@ class PlayFrame(AppFrame):
         self.create_grid()
         self.board_frame.pack(pady=(10, 6), padx=(10, 10))
 
+        self.player.turn()
+
     def create_grid(self) -> None:
         """Creates the grid of buttons connected to board cells"""
         for i in range(len(self.board.state)):
@@ -234,19 +238,31 @@ class PlayFrame(AppFrame):
 
         for row in range(len(self.board.template)):
             for col, cell in enumerate(self.board.template[row]):
-                button = BoardButton(self.board_frame, f'{self.board.state[row][col]}', row, col, command=lambda move=cell: self.make_move(move, self.player))
+                button = BoardButton(self.board_frame, f'{self.board.state[row][col]}', row, col, command=lambda move=cell: self.make_move(move))
 
                 self.buttons.append(button)
 
+    def create_player(self, symbol, player_type):
+        if player_type == 'Human':
+            return HumanPlayer(symbol, self)
+
+        elif player_type == 'Random AI':
+            return AiPlayer(symbol, self)
+
     def swap_player(self) -> None:
         """Swap the current player"""
-        if self.player == 'X': self.player = 'O'
-        else: self.player = 'X'
+        if self.player == self.player_1: self.player = self.player_2
+        else: self.player = self.player_1
 
     def lock_board_buttons(self) -> None:
         """disable all board buttons"""
         for button in self.buttons:
             button.configure(state='disabled')
+
+    def unlock_board_buttons(self) -> None:
+        """enable all board buttons"""
+        for button in self.buttons:
+            button.configure(state='enabled')
 
     def check_result(self) -> str:
         """
@@ -276,28 +292,34 @@ class PlayFrame(AppFrame):
         """Enable all board buttons and reset their labels"""
         self.parent.game_active = True
         self.board = Board()
-        self.player = self.starting_player
+        self.player = self.player_1
 
         for button in self.buttons:
             button.configure(state='enabled', text='', image=None)
 
-        self.title_label.configure(text=f'Player {self.starting_player} starts the game!')
+        self.title_label.configure(text=f'Player {self.player_1.symbol} starts the game!')
 
     def back_to_game_settings(self) -> None:
         self.parent.game_active = False
         self.change_frame(self.parent.game_creation_frame)
 
-    def make_move(self, move, symbol) -> None:
+    def make_move(self, move) -> None:
         """
         Handle the pressings of a board button by the current player
 
         :param move: The number corresponding to the board cell
-        :param symbol: The symbol of the current player
+        # :param symbol: The symbol of the current player
         """
-        self.board.update(move, symbol)
-        image = ctk.CTkImage(Image.open(f'Assets/{symbol}_symbol.png'), size=(64, 64))
+        self.board.update(move, self.player.symbol)
+        image = ctk.CTkImage(Image.open(f'Assets/{self.player.symbol}_symbol.png'), size=(64, 64))
         self.buttons[int(move) - 1].configure(text='', state='disabled', image=image)
+
+        self.update_idletasks()
         if not self.check_result():
             self.swap_player()
-            self.title_label.configure(text=f'Player {self.player}, make your move!')
+            self.title_label.configure(text=f'Player {self.player.symbol}, make your move!')
+
+            if isinstance(self.player, AiPlayer):
+                self.title_label.configure(text=f'AI player {self.player.symbol} is making it\'s move!')
+                self.after(700, self.player.turn)
 

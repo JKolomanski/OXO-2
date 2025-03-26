@@ -1,18 +1,15 @@
 from random import choice
-from time import sleep
-
-from board import Board
-from ui import Ui
 
 
 class Player:
     """Base class for players."""
 
-    def __init__(self, symbol: str):
+    def __init__(self, symbol: str, parent):
         self.symbol = symbol
+        self.parent = parent
 
 
-    def make_move(self, board: Board):
+    def turn(self):
         """To be implemented by subclasses"""
         return None
 
@@ -20,27 +17,29 @@ class Player:
 class HumanPlayer(Player):
     """Handles the human player."""
 
-    def make_move(self, board: Board) -> str:
+    def turn(self) -> None:
         """
         Handles human player move by getting user's input
 
-        :param board; A Board object
+        # :param board; A Board object
         :returns: A string containing the move cell index
         """
-        return Ui.get_user_input(board.get_possible_moves(), f'Player {self.symbol}, make your move!')
+        # self.parent.unlock_board_buttons()
 
 
 class AiPlayer(Player):
     """Handles the computer player."""
 
-    def make_move(self, board: Board) -> list[str]:
+    def turn(self):
         """
         Handles ai player move by choosing a random cell index from available
 
-        :param board; A Board object
+        # :param board; A Board object
         :returns: A string containing the move cell index
         """
-        move = choice(board.get_possible_moves())
-        Ui.display_ai_move_message(self.symbol, move)
-        sleep(1)
-        return move
+        # self.parent.lock_board_buttons()
+        self.make_move()
+
+    def make_move(self):
+        move = choice(self.parent.board.get_possible_moves())
+        self.parent.make_move(move)
