@@ -238,7 +238,7 @@ class PlayFrame(AppFrame):
 
         for row in range(len(self.board.template)):
             for col, cell in enumerate(self.board.template[row]):
-                button = BoardButton(self.board_frame, f'{self.board.state[row][col]}', row, col, command=lambda move=cell: self.make_move(move))
+                button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, command=lambda move=cell: self.make_move(move))
 
                 self.buttons.append(button)
 
@@ -262,6 +262,7 @@ class PlayFrame(AppFrame):
     def unlock_free_buttons(self) -> None:
         """Unlock all board buttons that are still free (don't have an image on them)"""
         for button in self.buttons:
+            print('a' + button.cget('text') + 'b')
             if  not button.cget('image'):
                 button.configure(state='enabled')
 
@@ -295,8 +296,8 @@ class PlayFrame(AppFrame):
         self.board = Board()
         self.player = self.player_1
 
-        for button in self.buttons:
-            button.configure(state='enabled', text='', image=None)
+        for i, button in enumerate(self.buttons):
+            button.configure(state='enabled', text=str(i + 1), image=None)
 
         self.title_label.configure(text=f'Player {self.player_1.symbol} starts the game!')
 
@@ -314,7 +315,7 @@ class PlayFrame(AppFrame):
         delay = 0
         self.board.update(move, self.player.symbol)
         image = ctk.CTkImage(Image.open(f'Assets/{self.player.symbol}_symbol.png'), size=(64, 64))
-        self.buttons[int(move) - 1].configure(text='', state='disabled', image=image)
+        self.buttons[int(move) - 1].configure(state='disabled', text='', image=image)
 
         self.update_idletasks()
         if not self.check_result():
