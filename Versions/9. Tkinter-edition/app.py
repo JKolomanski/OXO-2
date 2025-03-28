@@ -259,10 +259,11 @@ class PlayFrame(AppFrame):
         for button in self.buttons:
             button.configure(state='disabled')
 
-    def unlock_board_buttons(self) -> None:
-        """enable all board buttons"""
+    def unlock_free_buttons(self) -> None:
+        """Unlock all board buttons that are still free (don't have an image on them)"""
         for button in self.buttons:
-            button.configure(state='enabled')
+            if  not button.cget('image'):
+                button.configure(state='enabled')
 
     def check_result(self) -> str:
         """
@@ -289,7 +290,7 @@ class PlayFrame(AppFrame):
         return result
 
     def reset_board(self) -> None:
-        """Enable all board buttons and reset their labels"""
+        """Enable all board buttons and reset their images"""
         self.parent.game_active = True
         self.board = Board()
         self.player = self.player_1
@@ -310,6 +311,7 @@ class PlayFrame(AppFrame):
         :param move: The number corresponding to the board cell
         # :param symbol: The symbol of the current player
         """
+        delay = 0
         self.board.update(move, self.player.symbol)
         image = ctk.CTkImage(Image.open(f'Assets/{self.player.symbol}_symbol.png'), size=(64, 64))
         self.buttons[int(move) - 1].configure(text='', state='disabled', image=image)
@@ -321,5 +323,8 @@ class PlayFrame(AppFrame):
 
             if isinstance(self.player, AiPlayer):
                 self.title_label.configure(text=f'AI player {self.player.symbol} is making it\'s move!')
-                self.after(700, self.player.turn)
+                self.lock_board_buttons()
+                delay = 700
+
+            self.after(delay, self.player.turn)
 

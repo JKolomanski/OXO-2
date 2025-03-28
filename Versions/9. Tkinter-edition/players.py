@@ -24,7 +24,7 @@ class HumanPlayer(Player):
         # :param board; A Board object
         :returns: A string containing the move cell index
         """
-        # self.parent.unlock_board_buttons()
+        self.parent.unlock_free_buttons()
 
 
 class AiPlayer(Player):
@@ -37,9 +37,5 @@ class AiPlayer(Player):
         # :param board; A Board object
         :returns: A string containing the move cell index
         """
-        # self.parent.lock_board_buttons()
-        self.make_move()
-
-    def make_move(self):
         move = choice(self.parent.board.get_possible_moves())
         self.parent.make_move(move)
