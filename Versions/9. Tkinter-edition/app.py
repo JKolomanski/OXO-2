@@ -259,13 +259,15 @@ class PlayFrame(AppFrame):
         else: self.player = self.player_1
 
     def lock_board_buttons(self) -> None:
-        """disable all board buttons"""
+        """disable all board buttons and the reset button"""
+        self.reset_button.configure(state='disabled')
         for i, button in enumerate(self.buttons):
             button.configure(state='disabled')
             self.parent.unbind(f"<Key-{i+1}>")
 
     def unlock_free_buttons(self) -> None:
-        """Unlock all board buttons that are still free (don't have an image on them)"""
+        """Unlock all board buttons that are still free (don't have an image on them) and unlocks the reset button"""
+        self.reset_button.configure(state='enabled')
         for i, button in enumerate(self.buttons):
             if not button.cget('image'):
                 button.configure(state='enabled')
@@ -285,12 +287,14 @@ class PlayFrame(AppFrame):
         # Tie
         if result == 'FULL':
             self.title_label.configure(text='It\'s a tie!')
+            self.reset_button.configure(state='enabled')
             self.parent.game_active = False
 
         # One of the players won
         elif result:
             self.title_label.configure(text=f'Player {result} won!')
             self.lock_board_buttons()
+            self.reset_button.configure(state='enabled')
             self.parent.game_active = False
 
         return result
@@ -340,4 +344,3 @@ class PlayFrame(AppFrame):
                 delay = 700
 
             self.after(delay, self.player.turn)
-
