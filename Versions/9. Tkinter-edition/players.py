@@ -4,8 +4,9 @@ from random import choice
 class Player:
     """Base class for players."""
 
-    def __init__(self, symbol: str, parent, image):
+    def __init__(self, symbol: str, board_symbol: str, parent, image):
         self.symbol = symbol
+        self.board_symbol = board_symbol
         self.parent = parent
         self.image = image
 

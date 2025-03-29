@@ -261,15 +261,16 @@ class PlayFrame(AppFrame):
         p2_type = self.parent.game_creation_frame.player_2_frame.type_combobox.get()
         p2_image = color_symbol_image(p2_symbol, settings[self.parent.game_creation_frame.player_2_frame.color_combobox.get()])
 
-        return self.create_player(p1_symbol, p1_type, p1_image), self.create_player(p2_symbol, p2_type, p2_image)
+        # Board symbol will be the symbol used for evaluating results (We use them to avoid a problem where two players would share a symbol)
+        return self.create_player(p1_symbol, 'A', p1_type, p1_image), self.create_player(p2_symbol, 'B', p2_type, p2_image)
 
-    def create_player(self, symbol, player_type, image) -> Player:
+    def create_player(self, symbol, board_symbol, player_type, image) -> Player:
         """Create the correct player instance"""
         if player_type == 'Human':
-            return HumanPlayer(symbol, self, image)
+            return HumanPlayer(symbol,  board_symbol, self, image)
 
         elif player_type == 'Random AI':
-            return AiPlayer(symbol, self, image)
+            return AiPlayer(symbol, board_symbol, self, image)
 
     def swap_player(self) -> None:
         """Swap the current player"""
@@ -310,7 +311,7 @@ class PlayFrame(AppFrame):
 
         # One of the players won
         elif result:
-            self.title_label.configure(text=f'Player {result} won!')
+            self.title_label.configure(text=f'Player {self.player.symbol} won!')
             self.lock_board_buttons()
             self.reset_button.configure(state='enabled')
             self.parent.game_active = False
@@ -346,7 +347,7 @@ class PlayFrame(AppFrame):
         :param move: The number corresponding to the board cell
         """
         delay = 0
-        self.board.update(move, self.player.symbol)
+        self.board.update(move, self.player.board_symbol)
         image = ctk.CTkImage(self.player.image, size=(64, 64))
         self.buttons[int(move) - 1].configure(state='disabled', text='', image=image)
         self.parent.unbind(f"<Key-{move}>")
