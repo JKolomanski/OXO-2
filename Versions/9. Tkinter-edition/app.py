@@ -2,7 +2,7 @@
 import webbrowser
 from random import choice
 
-from players import HumanPlayer, AiPlayer
+from players import Player, HumanPlayer, AiPlayer
 from board import Board
 from ui_elements import *
 
@@ -67,13 +67,18 @@ class MainMenuFrame(AppFrame):
 
         # Initialise buttons for different sections
         self.play_button = Button(self.button_frame, 'Play', self.button_size,
-                                  command=lambda: self.change_frame(parent.game_creation_frame) if not self.parent.game_active else self.change_frame(parent.play_frame))
+                                  command=lambda: self.change_frame(parent.game_creation_frame) if not self.parent.game_active else self.activate_game())
         self.settings_button = Button(self.button_frame, 'Settings', self.button_size, command=lambda: self.change_frame(parent.settings_frame))
         self.about_button = Button(self.button_frame, 'About', self.button_size, command=lambda: self.change_frame(parent.about_frame))
         self.quit_button = Button(self.button_frame, 'Quit', self.button_size, command=self.parent.destroy)
 
         self.button_frame.pack(pady=(20, 0))
         self.pack(expand=True, fill="both", pady=(5, 5), padx=(5, 5))
+
+    def activate_game(self):
+        """Resume a running game"""
+        self.parent.play_frame.unlock_free_buttons()
+        self.change_frame(self.parent.play_frame)
 
 
 class AboutFrame(AppFrame):
@@ -174,7 +179,7 @@ class GameCreationFrame(AppFrame):
         self.player_1_frame.pack(side='left', expand=True, fill='y')
         self.player_2_frame.pack(side='right', expand=True, fill='y')
 
-    def start_game(self):
+    def start_game(self) -> None:
         self.parent.game_active = True
         self.parent.play_frame.reset_board()
         self.change_frame(self.parent.play_frame)
@@ -197,15 +202,14 @@ class PlayFrame(AppFrame):
 
         # Back button
         self.back_button = BackButton(self)
+        self.back_button.configure(command=self.back_button_pressed)
         self.back_button.place(relx=0.5, anchor="center", rely=0.5)
-        # self.button_frame.configure(fg_color='#666666')
         self.button_frame.pack(side='bottom', pady=(0, 5), anchor='center', fill='x', expand=True)
 
         # Game settings button
         self.settings_button_frame = ctk.CTkFrame(self.button_frame, fg_color=settings['bg_color'])
         self.settings_button_frame.pack(side='left', padx=(90, 0), fill='x')
         self.settings_button = Button(self.settings_button_frame, '⚙', [42, 42], command=self.back_to_game_settings)
-        # self.settings_button.pack()
 
         # Title label
         self.title_label = ctk.CTkLabel(self,
@@ -239,10 +243,10 @@ class PlayFrame(AppFrame):
         for row in range(len(self.board.template)):
             for col, cell in enumerate(self.board.template[row]):
                 button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, command=lambda move=cell: self.make_move(move))
-
                 self.buttons.append(button)
 
-    def create_player(self, symbol, player_type):
+    def create_player(self, symbol, player_type) -> Player:
+        """Create the correct player instance"""
         if player_type == 'Human':
             return HumanPlayer(symbol, self)
 
@@ -256,15 +260,16 @@ class PlayFrame(AppFrame):
 
     def lock_board_buttons(self) -> None:
         """disable all board buttons"""
-        for button in self.buttons:
+        for i, button in enumerate(self.buttons):
             button.configure(state='disabled')
+            self.parent.unbind(f"<Key-{i+1}>")
 
     def unlock_free_buttons(self) -> None:
         """Unlock all board buttons that are still free (don't have an image on them)"""
-        for button in self.buttons:
-            print('a' + button.cget('text') + 'b')
-            if  not button.cget('image'):
+        for i, button in enumerate(self.buttons):
+            if not button.cget('image'):
                 button.configure(state='enabled')
+                self.parent.bind(f"<Key-{i + 1}>", lambda event, move=str(i + 1): self.make_move(move))
 
     def check_result(self) -> str:
         """
@@ -298,14 +303,20 @@ class PlayFrame(AppFrame):
 
         for i, button in enumerate(self.buttons):
             button.configure(state='enabled', text=str(i + 1), image=None)
+            self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.make_move(move))
 
         self.title_label.configure(text=f'Player {self.player_1.symbol} starts the game!')
 
+    def back_button_pressed(self):
+        self.lock_board_buttons()
+        self.change_frame(self.parent.main_menu_frame)
+
     def back_to_game_settings(self) -> None:
+        """Return back to game settings"""
         self.parent.game_active = False
         self.change_frame(self.parent.game_creation_frame)
 
-    def make_move(self, move) -> None:
+    def make_move(self, move: str) -> None:
         """
         Handle the pressings of a board button by the current player
 
@@ -316,6 +327,7 @@ class PlayFrame(AppFrame):
         self.board.update(move, self.player.symbol)
         image = ctk.CTkImage(Image.open(f'Assets/{self.player.symbol}_symbol.png'), size=(64, 64))
         self.buttons[int(move) - 1].configure(state='disabled', text='', image=image)
+        self.parent.unbind(f"<Key-{move}>")
 
         self.update_idletasks()
         if not self.check_result():
