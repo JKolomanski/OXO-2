@@ -4,9 +4,10 @@ from random import choice
 class Player:
     """Base class for players."""
 
-    def __init__(self, symbol: str, parent):
+    def __init__(self, symbol: str, parent, image):
         self.symbol = symbol
         self.parent = parent
+        self.image = image
 
 
     def turn(self):
@@ -38,4 +39,4 @@ class AiPlayer(Player):
         :returns: A string containing the move cell index
         """
         move = choice(self.parent.board.get_possible_moves())
-        self.parent.make_move(move)
+        self.parent.handle_move(move)

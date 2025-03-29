@@ -5,6 +5,7 @@ from random import choice
 from players import Player, HumanPlayer, AiPlayer
 from board import Board
 from ui_elements import *
+from image_manipulation import color_symbol_image
 
 
 class App(ctk.CTk):
@@ -190,10 +191,16 @@ class PlayFrame(AppFrame):
     def __init__(self, parent):
         self.parent = parent
         self.board = Board()
-        self.player_1 = self.create_player(self.parent.game_creation_frame.player_1_frame.symbol_combobox.get(),
-                                           self.parent.game_creation_frame.player_1_frame.type_combobox.get())
-        self.player_2 = self.create_player(self.parent.game_creation_frame.player_2_frame.symbol_combobox.get(),
-                                           self.parent.game_creation_frame.player_2_frame.type_combobox.get())
+        p1_symbol = self.parent.game_creation_frame.player_1_frame.symbol_combobox.get()
+        p1_type = self.parent.game_creation_frame.player_1_frame.type_combobox.get()
+        p1_image = color_symbol_image(p1_symbol, settings[self.parent.game_creation_frame.player_1_frame.color_combobox.get()])
+        p2_symbol = self.parent.game_creation_frame.player_2_frame.symbol_combobox.get()
+        p2_type = self.parent.game_creation_frame.player_2_frame.type_combobox.get()
+        p2_image = color_symbol_image(p2_symbol, settings[self.parent.game_creation_frame.player_2_frame.color_combobox.get()])
+
+        self.player_1 = self.create_player(p1_symbol, p1_type, p1_image)
+        self.player_2 = self.create_player(p2_symbol, p2_type, p2_image)
+
         self.player = self.player_1
         super().__init__(self.parent)
 
@@ -244,16 +251,16 @@ class PlayFrame(AppFrame):
 
         for row in range(len(self.board.template)):
             for col, cell in enumerate(self.board.template[row]):
-                button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, command=lambda move=cell: self.make_move(move))
+                button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, command=lambda move=cell: self.handle_move(move))
                 self.buttons.append(button)
 
-    def create_player(self, symbol, player_type) -> Player:
+    def create_player(self, symbol, player_type, image) -> Player:
         """Create the correct player instance"""
         if player_type == 'Human':
-            return HumanPlayer(symbol, self)
+            return HumanPlayer(symbol, self, image)
 
         elif player_type == 'Random AI':
-            return AiPlayer(symbol, self)
+            return AiPlayer(symbol, self, image)
 
     def swap_player(self) -> None:
         """Swap the current player"""
@@ -273,7 +280,7 @@ class PlayFrame(AppFrame):
         for i, button in enumerate(self.buttons):
             if not button.cget('image'):
                 button.configure(state='enabled')
-                self.parent.bind(f"<Key-{i + 1}>", lambda event, move=str(i + 1): self.make_move(move))
+                self.parent.bind(f"<Key-{i + 1}>", lambda event, move=str(i + 1): self.handle_move(move))
 
     def check_result(self) -> str:
         """
@@ -309,7 +316,7 @@ class PlayFrame(AppFrame):
 
         for i, button in enumerate(self.buttons):
             button.configure(state='enabled', text=str(i + 1), image=None)
-            self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.make_move(move))
+            self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.handle_move(move))
 
         self.title_label.configure(text=f'Player {self.player_1.symbol} starts the game!')
         self.after(700, self.player.turn)
@@ -323,16 +330,15 @@ class PlayFrame(AppFrame):
         self.parent.game_active = False
         self.change_frame(self.parent.game_creation_frame)
 
-    def make_move(self, move: str) -> None:
+    def handle_move(self, move: str) -> None:
         """
         Handle the pressings of a board button by the current player
 
         :param move: The number corresponding to the board cell
-        # :param symbol: The symbol of the current player
         """
         delay = 0
         self.board.update(move, self.player.symbol)
-        image = ctk.CTkImage(Image.open(f'Assets/{self.player.symbol}_symbol.png'), size=(64, 64))
+        image = ctk.CTkImage(self.player.image, size=(64, 64))
         self.buttons[int(move) - 1].configure(state='disabled', text='', image=image)
         self.parent.unbind(f"<Key-{move}>")
 
