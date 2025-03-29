@@ -182,7 +182,6 @@ class GameCreationFrame(AppFrame):
     def start_game(self) -> None:
         self.parent.play_frame = PlayFrame(self.parent)
         self.parent.game_active = True
-        self.parent.play_frame.reset_board()
         self.change_frame(self.parent.play_frame)
 
 
@@ -191,8 +190,10 @@ class PlayFrame(AppFrame):
     def __init__(self, parent):
         self.parent = parent
         self.board = Board()
-        self.player_1 = self.create_player(self.parent.game_creation_frame.player_1_frame.symbol_combobox.get(), 'Human')
-        self.player_2 = self.create_player(self.parent.game_creation_frame.player_2_frame.symbol_combobox.get(), 'Random AI')
+        self.player_1 = self.create_player(self.parent.game_creation_frame.player_1_frame.symbol_combobox.get(),
+                                           self.parent.game_creation_frame.player_1_frame.type_combobox.get())
+        self.player_2 = self.create_player(self.parent.game_creation_frame.player_2_frame.symbol_combobox.get(),
+                                           self.parent.game_creation_frame.player_2_frame.type_combobox.get())
         self.player = self.player_1
         super().__init__(self.parent)
 
@@ -233,7 +234,7 @@ class PlayFrame(AppFrame):
         self.create_grid()
         self.board_frame.pack(pady=(10, 6), padx=(10, 10))
 
-        self.player.turn()
+        self.after(700, self.player.turn)
 
     def create_grid(self) -> None:
         """Creates the grid of buttons connected to board cells"""
@@ -311,6 +312,7 @@ class PlayFrame(AppFrame):
             self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.make_move(move))
 
         self.title_label.configure(text=f'Player {self.player_1.symbol} starts the game!')
+        self.after(700, self.player.turn)
 
     def back_button_pressed(self):
         self.lock_board_buttons()
