@@ -191,17 +191,10 @@ class PlayFrame(AppFrame):
     def __init__(self, parent):
         self.parent = parent
         self.board = Board()
-        p1_symbol = self.parent.game_creation_frame.player_1_frame.symbol_combobox.get()
-        p1_type = self.parent.game_creation_frame.player_1_frame.type_combobox.get()
-        p1_image = color_symbol_image(p1_symbol, settings[self.parent.game_creation_frame.player_1_frame.color_combobox.get()])
-        p2_symbol = self.parent.game_creation_frame.player_2_frame.symbol_combobox.get()
-        p2_type = self.parent.game_creation_frame.player_2_frame.type_combobox.get()
-        p2_image = color_symbol_image(p2_symbol, settings[self.parent.game_creation_frame.player_2_frame.color_combobox.get()])
 
-        self.player_1 = self.create_player(p1_symbol, p1_type, p1_image)
-        self.player_2 = self.create_player(p2_symbol, p2_type, p2_image)
-
+        self.player_1, self.player_2 = self.create_players()
         self.player = self.player_1
+
         super().__init__(self.parent)
 
         # Reset button
@@ -253,6 +246,22 @@ class PlayFrame(AppFrame):
             for col, cell in enumerate(self.board.template[row]):
                 button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, command=lambda move=cell: self.handle_move(move))
                 self.buttons.append(button)
+
+    def create_players(self) -> Player:
+        """
+        Create player_1 and player_2 based on the chosen options
+
+        :returns: Player_1, Player_2. Two Player objects
+        """
+        p1_symbol = self.parent.game_creation_frame.player_1_frame.symbol_combobox.get()
+        p1_type = self.parent.game_creation_frame.player_1_frame.type_combobox.get()
+        p1_image = color_symbol_image(p1_symbol, settings[self.parent.game_creation_frame.player_1_frame.color_combobox.get()])
+
+        p2_symbol = self.parent.game_creation_frame.player_2_frame.symbol_combobox.get()
+        p2_type = self.parent.game_creation_frame.player_2_frame.type_combobox.get()
+        p2_image = color_symbol_image(p2_symbol, settings[self.parent.game_creation_frame.player_2_frame.color_combobox.get()])
+
+        return self.create_player(p1_symbol, p1_type, p1_image), self.create_player(p2_symbol, p2_type, p2_image)
 
     def create_player(self, symbol, player_type, image) -> Player:
         """Create the correct player instance"""
