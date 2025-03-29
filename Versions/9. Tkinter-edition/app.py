@@ -26,8 +26,8 @@ class App(ctk.CTk):
         self.about_frame = AboutFrame(parent=self)
         self.settings_frame = SettingsFrame(parent=self)
         self.game_creation_frame = GameCreationFrame(parent=self)
-        self.play_frame = PlayFrame(parent=self)
         self.main_menu_frame = MainMenuFrame(parent=self)
+        self.play_frame = None
         self.main_menu_frame.pack_propagate(False)
 
         # Bottom text (link to website)
@@ -180,6 +180,7 @@ class GameCreationFrame(AppFrame):
         self.player_2_frame.pack(side='right', expand=True, fill='y')
 
     def start_game(self) -> None:
+        self.parent.play_frame = PlayFrame(self.parent)
         self.parent.game_active = True
         self.parent.play_frame.reset_board()
         self.change_frame(self.parent.play_frame)
@@ -190,8 +191,8 @@ class PlayFrame(AppFrame):
     def __init__(self, parent):
         self.parent = parent
         self.board = Board()
-        self.player_1 = self.create_player('X', 'Human')
-        self.player_2 = self.create_player('O', 'Random AI')
+        self.player_1 = self.create_player(self.parent.game_creation_frame.player_1_frame.symbol_combobox.get(), 'Human')
+        self.player_2 = self.create_player(self.parent.game_creation_frame.player_2_frame.symbol_combobox.get(), 'Random AI')
         self.player = self.player_1
         super().__init__(self.parent)
 
