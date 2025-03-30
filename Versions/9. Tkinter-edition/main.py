@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 """
-    OXO 2: Object-oriented
-    Loner edition written following
-    the object-oriented programming paradigm
-    uses some more advanced techniques
+    OXO 2: Tkinter edition
+    OXO with full graphical ui written with tkinter
+    also contains tons of new quirks and features!
 """
 
 from app import App
