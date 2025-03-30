@@ -215,7 +215,7 @@ class PlayFrame(AppFrame):
 
         # Title label
         self.title_label = ctk.CTkLabel(self,
-                                        text=f'Player {self.player_1.symbol} ,start the game!',
+                                        text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''}, start the game!',
                                         font=(settings['font'], 16, 'bold'),
                                         text_color=settings['dark_bg_color'])
         self.title_label.pack()
@@ -255,22 +255,24 @@ class PlayFrame(AppFrame):
         """
         p1_symbol = self.parent.game_creation_frame.player_1_frame.symbol_combobox.get()
         p1_type = self.parent.game_creation_frame.player_1_frame.type_combobox.get()
-        p1_image = color_symbol_image(p1_symbol, settings[self.parent.game_creation_frame.player_1_frame.color_combobox.get()])
+        p1_color = self.parent.game_creation_frame.player_1_frame.color_combobox.get()
+        p1_image = color_symbol_image(p1_symbol, settings[p1_color])
 
         p2_symbol = self.parent.game_creation_frame.player_2_frame.symbol_combobox.get()
         p2_type = self.parent.game_creation_frame.player_2_frame.type_combobox.get()
-        p2_image = color_symbol_image(p2_symbol, settings[self.parent.game_creation_frame.player_2_frame.color_combobox.get()])
+        p2_color = self.parent.game_creation_frame.player_2_frame.color_combobox.get()
+        p2_image = color_symbol_image(p2_symbol, settings[p2_color])
 
         # Board symbol will be the symbol used for evaluating results (We use them to avoid a problem where two players would share a symbol)
-        return self.create_player(p1_symbol, 'A', p1_type, p1_image), self.create_player(p2_symbol, 'B', p2_type, p2_image)
+        return self.create_player(p1_symbol, 'A', p1_color, p1_type, p1_image), self.create_player(p2_symbol, 'B', p2_color, p2_type, p2_image)
 
-    def create_player(self, symbol, board_symbol, player_type, image) -> Player:
+    def create_player(self, symbol, board_symbol, color, player_type, image) -> Player:
         """Create the correct player instance"""
         if player_type == 'Human':
-            return HumanPlayer(symbol,  board_symbol, self, image)
+            return HumanPlayer(symbol,  board_symbol, color, self, image)
 
         elif player_type == 'Random AI':
-            return AiPlayer(symbol, board_symbol, self, image)
+            return AiPlayer(symbol, board_symbol, color, self, image)
 
     def swap_player(self) -> None:
         """Swap the current player"""
@@ -311,7 +313,7 @@ class PlayFrame(AppFrame):
 
         # One of the players won
         elif result:
-            self.title_label.configure(text=f'Player {self.player.symbol} won!')
+            self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} won!')
             self.lock_board_buttons()
             self.reset_button.configure(state='enabled')
             self.parent.game_active = False
@@ -328,7 +330,7 @@ class PlayFrame(AppFrame):
             button.configure(state='enabled', text=str(i + 1), image=None)
             self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.handle_move(move))
 
-        self.title_label.configure(text=f'Player {self.player_1.symbol} starts the game!')
+        self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} starts the game!')
         self.after(700, self.player.turn)
 
     def back_button_pressed(self):
@@ -355,10 +357,10 @@ class PlayFrame(AppFrame):
         self.update_idletasks()
         if not self.check_result():
             self.swap_player()
-            self.title_label.configure(text=f'Player {self.player.symbol}, make your move!')
+            self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''}, make your move!')
 
             if isinstance(self.player, AiPlayer):
-                self.title_label.configure(text=f'AI player {self.player.symbol} is making it\'s move!')
+                self.title_label.configure(text=f'AI player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} is making it\'s move!')
                 self.lock_board_buttons()
                 delay = 700
 
