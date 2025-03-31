@@ -234,6 +234,7 @@ class PlayFrame(AppFrame):
         self.create_grid()
         self.board_frame.pack(pady=(10, 6), padx=(10, 10))
 
+        self.lock_board_buttons()
         self.after(700, self.player.turn)
 
     def create_grid(self) -> None:
@@ -327,10 +328,11 @@ class PlayFrame(AppFrame):
         self.player = self.player_1
 
         for i, button in enumerate(self.buttons):
-            button.configure(state='enabled', text=str(i + 1), image=None)
+            button.configure(text=str(i + 1), image=None)
             self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.handle_move(move))
 
         self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} starts the game!')
+        self.lock_board_buttons()
         self.after(700, self.player.turn)
 
     def back_button_pressed(self):
