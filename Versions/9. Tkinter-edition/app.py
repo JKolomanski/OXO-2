@@ -123,8 +123,23 @@ class SettingsFrame(AppFrame):
 
         self.back_button = BackButton(self)
         self.button_frame.pack(side='bottom', pady=(0, 5))
-        self.title_label = ctk.CTkLabel(self, text='work in progress')
+        self.title_label = ctk.CTkLabel(self,
+                                        text='Settings',
+                                        font=(settings['font'], 16, 'bold'),
+                                        text_color=settings['dark_bg_color'])
         self.title_label.pack()
+
+        self.buttons_frame = ctk.CTkFrame(self, width=200, fg_color=settings['bg_color'])
+        self.buttons_frame.pack()
+
+        self.theme_label = ButtonTypeLabel(self.buttons_frame, 'Theme')
+        self.label_combobox = ComboBox(self.buttons_frame, values=['Light', 'Dark'])
+
+        self.numbers_label = ButtonTypeLabel(self.buttons_frame, 'Cell numbers')
+        self.numbers_combobox = ComboBox(self.buttons_frame, values=['Visible', 'Invisible'])
+
+        self.delay_label = ButtonTypeLabel(self.buttons_frame, 'AI player delay (ms)')
+        self.delay_combobox = ComboBox(self.buttons_frame, values=('700', '350', '100', '0', '1000'))
 
 
 class PlayerSettingsFrame(ctk.CTkFrame):
