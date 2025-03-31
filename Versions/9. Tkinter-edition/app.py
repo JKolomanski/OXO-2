@@ -250,7 +250,7 @@ class PlayFrame(AppFrame):
         self.board_frame.pack(pady=(10, 6), padx=(10, 10))
 
         self.lock_board_buttons()
-        self.after(700, self.player.turn)
+        self.after(400, self.player.turn)
 
     def create_grid(self) -> None:
         """Creates the grid of buttons connected to board cells"""
@@ -348,7 +348,7 @@ class PlayFrame(AppFrame):
 
         self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} starts the game!')
         self.lock_board_buttons()
-        self.after(700, self.player.turn)
+        self.after(400, self.player.turn)
 
     def back_button_pressed(self):
         self.lock_board_buttons()
@@ -379,6 +379,6 @@ class PlayFrame(AppFrame):
             if isinstance(self.player, AiPlayer):
                 self.title_label.configure(text=f'AI player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} is making it\'s move!')
                 self.lock_board_buttons()
-                delay = 700
+                delay = self.parent.settings_frame.delay_combobox.get()
 
             self.after(delay, self.player.turn)
