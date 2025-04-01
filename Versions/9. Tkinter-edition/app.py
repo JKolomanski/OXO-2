@@ -254,13 +254,15 @@ class PlayFrame(AppFrame):
 
     def create_grid(self) -> None:
         """Creates the grid of buttons connected to board cells"""
+        view_numbers = True if self.parent.settings_frame.numbers_combobox.get() == 'Visible' else False
+
         for i in range(len(self.board.state)):
             self.board_frame.rowconfigure(i, weight=1, uniform='grid')
             self.board_frame.columnconfigure(i, weight=1, uniform='grid')
 
         for row in range(len(self.board.template)):
             for col, cell in enumerate(self.board.template[row]):
-                button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, command=lambda move=cell: self.handle_move(move))
+                button = BoardButton(self.board_frame, f'{self.board.template[row][col]}', row, col, view_numbers, command=lambda move=cell: self.handle_move(move))
                 self.buttons.append(button)
 
     def create_players(self) -> Player:

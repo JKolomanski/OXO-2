@@ -96,13 +96,14 @@ class BoardButton(ctk.CTkButton):
     :param text: The text on the button
     :command: a function to be executed on press
     """
-    def __init__(self, parent, text, row, col, command):
+    def __init__(self, parent, text, row, col, view_numbers, command):
         self.parent = parent
         self.text = text
         self.command = command
         self.row = row
         self.col = col
-
+        if view_numbers: text_color = settings['gray']
+        else: text_color = settings['bg_color']
         super().__init__(self.parent,
                          text=self.text,
                          fg_color=settings['bg_color'],
@@ -110,7 +111,7 @@ class BoardButton(ctk.CTkButton):
                          corner_radius=0,
                          width=90,
                          height=90,
-                         text_color=settings['gray'],
+                         text_color=text_color,
                          font=(settings['font'], 32),
                          command=self.command)
 
