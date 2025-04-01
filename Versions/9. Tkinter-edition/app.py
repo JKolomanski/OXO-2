@@ -132,15 +132,11 @@ class SettingsFrame(AppFrame):
         self.buttons_frame = ctk.CTkFrame(self, width=200, fg_color=settings['bg_color'])
         self.buttons_frame.pack()
 
-        self.theme_label = ButtonTypeLabel(self.buttons_frame, 'Theme')
-        self.label_combobox = ComboBox(self.buttons_frame, values=['Light', 'Dark'])
-
         self.numbers_label = ButtonTypeLabel(self.buttons_frame, 'Cell numbers')
         self.numbers_combobox = ComboBox(self.buttons_frame, values=['Visible', 'Invisible'])
 
         self.delay_label = ButtonTypeLabel(self.buttons_frame, 'AI player delay (ms)')
         self.delay_combobox = ComboBox(self.buttons_frame, values=('700', '350', '100', '0', '1000'))
-
 
 class PlayerSettingsFrame(ctk.CTkFrame):
     def __init__(self, parent, player: str):
