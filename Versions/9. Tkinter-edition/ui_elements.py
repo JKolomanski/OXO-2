@@ -119,6 +119,7 @@ class BoardButton(ctk.CTkButton):
 
 
 class ButtonTypeLabel(ctk.CTkLabel):
+    """Label to explain a button / combobox to the user"""
     def __init__(self, parent, text: str):
         self.parent = parent
         super().__init__(self.parent,
@@ -128,6 +129,7 @@ class ButtonTypeLabel(ctk.CTkLabel):
         self.pack(pady=(15, 0), anchor='w')
 
 class ComboBox(ctk.CTkComboBox):
+    """A generic combobox class"""
     def __init__(self, parent, values: tuple):
         self.parent = parent
         super().__init__(self.parent,

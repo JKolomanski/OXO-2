@@ -139,6 +139,7 @@ class SettingsFrame(AppFrame):
         self.delay_combobox = ComboBox(self.buttons_frame, values=('700', '350', '100', '0', '1000'))
 
 class PlayerSettingsFrame(ctk.CTkFrame):
+    """A Frame to contain the settings for one player"""
     def __init__(self, parent, player: str):
         self.parent = parent
         self.player = player
@@ -192,6 +193,7 @@ class GameCreationFrame(AppFrame):
         self.player_2_frame.pack(side='right', expand=True, fill='y')
 
     def start_game(self) -> None:
+        """Start the game after pressing the START button"""
         self.parent.play_frame = PlayFrame(self.parent)
         self.parent.game_active = True
         self.change_frame(self.parent.play_frame)
@@ -349,6 +351,7 @@ class PlayFrame(AppFrame):
         self.after(400, self.player.turn)
 
     def back_button_pressed(self):
+        """Go back to main menu"""
         self.lock_board_buttons()
         self.change_frame(self.parent.main_menu_frame)
 
