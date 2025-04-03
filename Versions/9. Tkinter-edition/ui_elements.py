@@ -5,11 +5,11 @@ import json
 
 def get_settings() -> dict:
     """
-    Load the settings.json file and return it as a dictionary
+    Load the config.json file and return it as a dictionary
 
-    :return: The settings.json as a dict
+    :return: The config.json as a dict
     """
-    with open('settings.json', 'r') as f:
+    with open('config.json', 'r') as f:
         data = json.load(f)
         data["window_width"] = int(data["window_width"])
         data["window_height"] = int(data["window_height"])
