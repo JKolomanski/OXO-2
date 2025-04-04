@@ -21,10 +21,10 @@ class Node:
 
     def __str__(self):
         return (f'Node object\n'
-                f'State: \n{'\n'.join(str(row) for row in self.board.state)}\n'
+                f'State: \n{str(self.board)}\n'
                 f'Score: {self.score}\n'
                 f'Total descendants: {self.count_children()}\n\n'
-                f'Children states: \n{f'\n\n'.join(f'\n'.join(str(row) for row in child.board.state) + f'\nScore: {child.score}' for child in self.children)}\n')
+                f'Children states: \n{f'\n\n'.join(str(child.board) + f'\nScore: {child.score}' for child in self.children)}\n')
 
     def count_children(self):
         """Count the number of all descendants of this node (children + children of children...)"""
@@ -76,7 +76,7 @@ def get_possible_states(parent_node: Node, players: tuple[str]) -> None:
         get_possible_states(child, (players[1], players[0]))
 
 
-temp_board = Board(([' ', ' ', ' '],[ ' ', ' ', ' '], [' ', ' ', ' ']))
+temp_board = Board((['X', 'X', ' '],[ ' ', 'O', ' '], [' ', 'O', ' ']))
 root = Node(temp_board)
 get_possible_states(root, ('X', 'O'))
 
