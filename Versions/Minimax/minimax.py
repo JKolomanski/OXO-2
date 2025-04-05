@@ -17,7 +17,7 @@ class Node:
     def __init__(self, board: Board):
         self.board = board
         self.children = []
-        self.score = self.evaluate_score('O', 'X')
+        self.score = None
 
     def __str__(self):
         return (f'Node object\n'
@@ -49,35 +49,61 @@ class Node:
         elif result == min_player: return -1
         else: return None
 
+    def evaluate_minimax_score(self, functions: list, min_player, max_player):
+        """
+        Recursively evaluate the minmax score for this node based on scores of all descendants
 
-def get_possible_states(parent_node: Node, players: tuple[str]) -> None:
-    """
-    Get all the possible valid future stated of a game based on the state given inside a Node object.
-    Basically, generate a decision tree inside the parent node given
+        :param functions: a list of two min and max functions in the order in which players take turns
+        :param min_player: The symbol for the min player
+        :param max_player: The symbol for the max player
+        :returns: int with a value of -1, 0 or 1
+        """
+        self.score = self.evaluate_score(min_player, max_player)
+        if self.score is not None: return self.score
 
-    :param parent_node: The parent node to be modified
-    :param players: The list of players in the game (in correct order)
-    """
-    # Stop if terminal state
-    if parent_node.board.get_result():
-        return
+        children_scores = []
+        for child in self.children:
+            children_scores.append(child.evaluate_minimax_score((functions[1], functions[0]), min_player, max_player))
 
-    for i, row in enumerate(parent_node.board.state):
-        for j, cell in enumerate(row):
-            if cell == ' ':
-                new_state = deepcopy(parent_node.board.state)
-                new_state[i][j] = players[0]
-                new_board = Board(new_state)
-                child_node = Node(new_board)
-                parent_node.children.append(child_node)
+        if not children_scores:
+            self.score = 0
+        else:
+            self.score = functions[0](children_scores)
 
-    # Recursively evaluate for each child, while swapping players
-    for child in parent_node.children:
-        get_possible_states(child, (players[1], players[0]))
+        return self.score
+
+    def get_possible_states(self, players: tuple[str]) -> None:
+        """
+        Get all the possible valid future stated of a game based on the state inside this Node object.
+        Basically, generate a decision tree with node as the parent node
+
+        :param players: The list of players in the game (in correct order)
+        """
+        # Stop if terminal state
+        if self.board.get_result():
+            return
+
+        for i, row in enumerate(self.board.state):
+            for j, cell in enumerate(row):
+                if cell == ' ':
+                    new_state = deepcopy(self.board.state)
+                    new_state[i][j] = players[0]
+                    new_board = Board(new_state)
+                    child_node = Node(new_board)
+                    self.children.append(child_node)
+
+        # Recursively evaluate for each child, while swapping players
+        for child in self.children:
+            child.get_possible_states((players[1], players[0]))
 
 
-temp_board = Board((['X', 'X', ' '],[ ' ', 'O', ' '], [' ', 'O', ' ']))
+# Just for testing
+temp_board = Board(([' ', ' ', ' '],
+[' ', ' ', ' '],
+[' ', ' ', ' ']))
 root = Node(temp_board)
-get_possible_states(root, ('X', 'O'))
+root.get_possible_states(('X', 'O'))
 
+print(root.evaluate_minimax_score((max, min), 'O', 'X'))
+print('rooooooot')
 print(root)
