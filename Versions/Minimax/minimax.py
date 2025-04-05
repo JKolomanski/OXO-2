@@ -72,10 +72,11 @@ class Node:
 
         return self.score
 
-    def get_possible_states(self, players: tuple[str]) -> None:
+    def expand(self, players: tuple[str]) -> None:
         """
-        Get all the possible valid future stated of a game based on the state inside this Node object.
-        Basically, generate a decision tree with node as the parent node
+        Add all the possible valid future descendants, based on the state inside this Node object,
+        to the children attribute recursively
+        Basically, generate a decision tree with parent node as this parent node
 
         :param players: The list of players in the game (in correct order)
         """
@@ -94,7 +95,7 @@ class Node:
 
         # Recursively evaluate for each child, while swapping players
         for child in self.children:
-            child.get_possible_states((players[1], players[0]))
+            child.expand((players[1], players[0]))
 
 
 # Just for testing
@@ -102,7 +103,7 @@ temp_board = Board(([' ', ' ', ' '],
 [' ', ' ', ' '],
 [' ', ' ', ' ']))
 root = Node(temp_board)
-root.get_possible_states(('X', 'O'))
+root.expand(('X', 'O'))
 
 print(root.evaluate_minimax_score((max, min), 'O', 'X'))
 print('rooooooot')
