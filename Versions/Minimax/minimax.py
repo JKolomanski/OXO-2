@@ -1,14 +1,16 @@
 from board import Board
 from copy import  deepcopy
+from functools import total_ordering
 
 
-class Node:
+@total_ordering
+class MiniMaxNode:
     """
     Represents a node in a decision tree for a tic-tac-toe game.
 
     Attributes:
         board: Board
-            A Board object with its state attribute corresponding to the state that node represents
+            A Board object with its state attribute corresponding to the state that this node represents
         children: list[Node]
             A list of all child nodes (for every possible future game state)
         score: int or None
@@ -18,13 +20,21 @@ class Node:
         self.board = board
         self.children = []
         self.score = None
+        self.preceding_move = None
 
     def __str__(self):
         return (f'Node object\n'
+                f'Preceding move: {self.preceding_move}\n'
                 f'State: \n{str(self.board)}\n'
                 f'Score: {self.score}\n'
                 f'Total descendants: {self.count_children()}\n\n'
-                f'Children states: \n{f'\n\n'.join(str(child.board) + f'\nScore: {child.score}' for child in self.children)}\n')
+                f'Children states: \n{f'\n\n'.join(str(child.board) + f'\nScore: {child.score}' + f'\nPreceding_move: {child.preceding_move}' for child in self.children)}\n')
+
+    def __lt__(self, other):
+        return self.score < other.score
+
+    def __eq__(self, other):
+        return self.score == other.score
 
     def count_children(self):
         """Count the number of all descendants of this node (children + children of children...)"""
@@ -49,7 +59,7 @@ class Node:
         elif result == min_player: return -1
         else: return None
 
-    def evaluate_minimax_score(self, functions: list, min_player, max_player):
+    def evaluate_minimax_score(self, functions: list, min_player: str, max_player: str) -> int | None:
         """
         Recursively evaluate the minmax score for this node based on scores of all descendants
 
@@ -72,6 +82,19 @@ class Node:
 
         return self.score
 
+    def get_move(self, row_index: int, cell_index:int) -> str:
+        """
+        Get the cell number from list indexes
+
+        :param row_index: The index of the row the cell is in
+        :param cell_index: Index of the specific cell in that row
+        :returns: The move number corresponding to that cell
+        """
+        for i in range(len(self.board.state)):
+            for j in range(len(self.board.state)):
+                if i == row_index and j == cell_index:
+                    return self.board.template[i][j]
+
     def expand(self, players: tuple[str]) -> None:
         """
         Add all the possible valid future descendants, based on the state inside this Node object,
@@ -90,7 +113,8 @@ class Node:
                     new_state = deepcopy(self.board.state)
                     new_state[i][j] = players[0]
                     new_board = Board(new_state)
-                    child_node = Node(new_board)
+                    child_node = MiniMaxNode(new_board)
+                    child_node.preceding_move = child_node.get_move(i, j)
                     self.children.append(child_node)
 
         # Recursively evaluate for each child, while swapping players
@@ -99,12 +123,15 @@ class Node:
 
 
 # Just for testing
-temp_board = Board(([' ', ' ', ' '],
-[' ', ' ', ' '],
+temp_board = Board(([' ', 'O', 'X'],
+[' ', 'O', ' '],
 [' ', ' ', ' ']))
-root = Node(temp_board)
+root = MiniMaxNode(temp_board)
+
 root.expand(('X', 'O'))
 
-print(root.evaluate_minimax_score((max, min), 'O', 'X'))
+root.evaluate_minimax_score((max, min), 'O', 'X')
 print('rooooooot')
 print(root)
+best = max(root.children)
+print(best.preceding_move)
