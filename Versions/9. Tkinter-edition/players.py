@@ -47,7 +47,6 @@ class MiniMaxPlayer(Player):
         root_node = MiniMaxNode(self.parent.board)
         root_node.expand((self.board_symbol, f'{'A' if self.board_symbol == 'B' else 'B'}'))
         root_node.evaluate_minimax_score((max, min),f'{'A' if self.board_symbol == 'B' else 'B'}', self.board_symbol)
-        print(root_node)
         best_node = max(root_node.children)
 
         self.parent.handle_move(best_node.preceding_move)
