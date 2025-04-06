@@ -14,10 +14,8 @@ class Board:
             If a cell has been occupied, it's position is replaced with '' to represent that it has been taken
     """
 
-    def __init__(self) -> None:
-        self.state = [[' ', ' ', ' '],
-                      [' ', ' ', ' '],
-                      [' ', ' ', ' ']]
+    def __init__(self, base_state=([' ', ' ', ' '],[ ' ', ' ', ' '], [' ', ' ', ' '])) -> None:
+        self.state = list(base_state)
         self.template = [['1', '2', '3'],
                          ['4', '5', '6'],
                          ['7', '8', '9']]

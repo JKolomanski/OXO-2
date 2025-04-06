@@ -2,7 +2,7 @@
 import webbrowser
 from random import choice
 
-from players import Player, HumanPlayer, AiPlayer
+from players import Player, HumanPlayer, AiPlayer, MiniMaxPlayer
 from board import Board
 from ui_elements import *
 from image_manipulation import color_symbol_image
@@ -165,7 +165,7 @@ class PlayerSettingsFrame(ctk.CTkFrame):
         self.symbol_combobox = ComboBox(self, values=self.symbols)
 
         self.type_label = ButtonTypeLabel(self, 'Player type')
-        self.type_combobox = ComboBox(self, values=['Human', 'Random AI'])
+        self.type_combobox = ComboBox(self, values=['Human', 'Random AI', 'Minimax AI'])
 
         self.color_label = ButtonTypeLabel(self, 'Color')
         self.color_combobox = ComboBox(self, values=self.colors)
@@ -290,6 +290,9 @@ class PlayFrame(AppFrame):
         elif player_type == 'Random AI':
             return AiPlayer(symbol, board_symbol, color, self, image)
 
+        elif player_type == 'Minimax AI':
+            return MiniMaxPlayer(symbol, board_symbol, color, self, image)
+
     def swap_player(self) -> None:
         """Swap the current player"""
         if self.player == self.player_1: self.player = self.player_2
@@ -339,7 +342,7 @@ class PlayFrame(AppFrame):
     def reset_board(self) -> None:
         """Enable all board buttons and reset their images"""
         self.parent.game_active = True
-        self.board = Board()
+        self.board = Board(base_state=([' ', ' ', ' '],[ ' ', ' ', ' '], [' ', ' ', ' ']))
         self.player = self.player_1
 
         for i, button in enumerate(self.buttons):
@@ -377,7 +380,7 @@ class PlayFrame(AppFrame):
             self.swap_player()
             self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''}, make your move!')
 
-            if isinstance(self.player, AiPlayer):
+            if not isinstance(self.player, HumanPlayer):
                 self.title_label.configure(text=f'AI player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} is making it\'s move!')
                 self.lock_board_buttons()
                 delay = self.parent.settings_frame.delay_combobox.get()
