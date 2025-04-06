@@ -32,21 +32,18 @@ class HumanPlayer(Player):
 
 
 class AiPlayer(Player):
-    """Handles the computer player."""
+    """Handles the random computer player."""
 
     def turn(self):
-        """
-        Handles ai player move by choosing a random cell index from available
-
-        # :param board; A Board object
-        :returns: A string containing the move cell index
-        """
+        """Handles ai player move by choosing a random cell index from available"""
         move = choice(self.parent.board.get_possible_moves())
         self.parent.handle_move(move)
 
 
 class MiniMaxPlayer(Player):
+    """Handles a computer player making choices with the minimax algorithm"""
     def turn(self):
+        """Handles the turn for a minimax player"""
         root_node = MiniMaxNode(self.parent.board)
         root_node.expand((self.board_symbol, f'{'A' if self.board_symbol == 'B' else 'B'}'))
         root_node.evaluate_minimax_score((max, min),f'{'A' if self.board_symbol == 'B' else 'B'}', self.board_symbol)
