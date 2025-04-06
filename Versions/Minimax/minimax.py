@@ -120,18 +120,3 @@ class MiniMaxNode:
         # Recursively evaluate for each child, while swapping players
         for child in self.children:
             child.expand((players[1], players[0]))
-
-
-# Just for testing
-temp_board = Board(([' ', 'O', 'X'],
-[' ', 'O', ' '],
-[' ', ' ', ' ']))
-root = MiniMaxNode(temp_board)
-
-root.expand(('X', 'O'))
-
-root.evaluate_minimax_score((max, min), 'O', 'X')
-print('rooooooot')
-print(root)
-best = max(root.children)
-print(best.preceding_move)
