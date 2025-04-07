@@ -90,10 +90,7 @@ class MiniMaxNode:
         :param cell_index: Index of the specific cell in that row
         :returns: The move number corresponding to that cell
         """
-        for i in range(len(self.board.state)):
-            for j in range(len(self.board.state)):
-                if i == row_index and j == cell_index:
-                    return self.board.template[i][j]
+        return self.board.template[row_index][cell_index]
 
     def expand(self, players: tuple[str]) -> None:
         """
