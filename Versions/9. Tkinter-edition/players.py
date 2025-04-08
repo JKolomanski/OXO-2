@@ -44,9 +44,10 @@ class MiniMaxPlayer(Player):
     """Handles a computer player making choices with the minimax algorithm"""
     def turn(self):
         """Handles the turn for a minimax player"""
+        enemy_symbol = 'A' if self.board_symbol == 'B' else 'B'
         root_node = MiniMaxNode(self.parent.board)
-        root_node.expand((self.board_symbol, f'{'A' if self.board_symbol == 'B' else 'B'}'))
-        root_node.evaluate_minimax_score((max, min),f'{'A' if self.board_symbol == 'B' else 'B'}', self.board_symbol)
+        root_node.expand((self.board_symbol, enemy_symbol))
+        root_node.evaluate_minimax_score((max, min), enemy_symbol, self.board_symbol)
         best_node = max(root_node.children)
 
         self.parent.handle_move(best_node.preceding_move)

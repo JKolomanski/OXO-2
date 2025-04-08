@@ -227,8 +227,10 @@ class PlayFrame(AppFrame):
         self.settings_button = Button(self.settings_button_frame, '⚙', [42, 42], command=self.back_to_game_settings)
 
         # Title label
-        self.title_label = ctk.CTkLabel(self,
-                                        text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''}, start the game!',
+        color_info = f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''
+        self.title_label = ctk.CTkLabel(
+                                        self,
+                                        text=f'Player {self.player.symbol}{color_info}, start the game!',
                                         font=(settings['font'], 16, 'bold'),
                                         text_color=settings['dark_bg_color'])
         self.title_label.pack()
@@ -332,7 +334,8 @@ class PlayFrame(AppFrame):
 
         # One of the players won
         elif result:
-            self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} won!')
+            color_info = f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''
+            self.title_label.configure(text=f'Player {self.player.symbol}{color_info} won!')
             self.lock_board_buttons()
             self.reset_button.configure(state='enabled')
             self.parent.game_active = False
@@ -349,7 +352,8 @@ class PlayFrame(AppFrame):
             button.configure(text=str(i + 1), image=None)
             self.parent.bind(f"<Key-{i+1}>", lambda event, move=str(i+1): self.handle_move(move))
 
-        self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} starts the game!')
+        color_info = f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''
+        self.title_label.configure(text=f'Player {self.player.symbol}{color_info} starts the game!')
         self.lock_board_buttons()
         self.after(400, self.player.turn)
 
@@ -378,10 +382,11 @@ class PlayFrame(AppFrame):
         self.update_idletasks()
         if not self.check_result():
             self.swap_player()
-            self.title_label.configure(text=f'Player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''}, make your move!')
+            color_info = f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''
+            self.title_label.configure(text=f'Player {self.player.symbol}{color_info}, make your move!')
 
             if not isinstance(self.player, HumanPlayer):
-                self.title_label.configure(text=f'AI player {self.player.symbol}{f' ({self.player.color})' if self.player_1.symbol == self.player_2.symbol else ''} is making it\'s move!')
+                self.title_label.configure(text=f'AI player {self.player.symbol}{color_info} is making it\'s move!')
                 self.lock_board_buttons()
                 delay = self.parent.settings_frame.delay_combobox.get()
 
