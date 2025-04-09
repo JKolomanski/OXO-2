@@ -6,16 +6,20 @@ class Board:
     Represents a tic-tac-toe board.
 
     Attributes:
-        state (list[list[str]]): A list of 3 lists, where each nested list is a row,
+        state: list[list[str]]
+            (list[list[str]]): A list of 3 lists, where each nested list is a row,
             which has 3 str elements which represent cells. All of them are equal to ' ' by default.
             Used to store boards state
 
-        template (list[list[str]]): Similar to state, but used to store the cells positions.
+        template (list[list[str]]): 
+            Similar to state, but used to store the cells positions.
             If a cell has been occupied, it's position is replaced with '' to represent that it has been taken
     """
 
-    def __init__(self, base_state=([' ', ' ', ' '],[ ' ', ' ', ' '], [' ', ' ', ' '])) -> None:
-        self.state = list(base_state)
+    def __init__(self, base_state=None):
+        if base_state is None:
+            base_state = [[' ', ' ', ' '] for _ in range(3)]
+        self.state = base_state
         self.template = [['1', '2', '3'],
                          ['4', '5', '6'],
                          ['7', '8', '9']]
