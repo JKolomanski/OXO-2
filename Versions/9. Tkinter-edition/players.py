@@ -17,6 +17,10 @@ class Player:
         """To be implemented by subclasses"""
         return None
 
+    def get_enemy_symbol(self):
+        """Get the symbol of the opposite player"""
+        return 'A' if self.board_symbol == 'B' else 'B'
+
 
 class HumanPlayer(Player):
     """Handles the human player."""
@@ -44,10 +48,11 @@ class MiniMaxPlayer(Player):
     """Handles a computer player making choices with the minimax algorithm"""
     def turn(self):
         """Handles the turn for a minimax player"""
-        enemy_symbol = 'A' if self.board_symbol == 'B' else 'B'
+        enemy_symbol = self.get_enemy_symbol()
         root_node = MiniMaxNode(self.parent.board)
         root_node.expand((self.board_symbol, enemy_symbol))
         root_node.evaluate_minimax_score((max, min), enemy_symbol, self.board_symbol)
-        best_node = max(root_node.children)
+        all_best_nodes = [node for node in root_node.children if node.score == max(root_node.children).score]
+        chosen_node = choice(all_best_nodes)
 
-        self.parent.handle_move(best_node.preceding_move)
+        self.parent.handle_move(chosen_node.preceding_move)
