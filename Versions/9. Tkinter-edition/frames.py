@@ -1,6 +1,5 @@
 # import tkinter as tk
 import webbrowser
-from random import choice
 
 from players import Player, HumanPlayer, AiPlayer, MiniMaxPlayer
 from board import Board
@@ -153,7 +152,7 @@ class PlayFrame(AppFrame):
     """The frame for the tic-tac-toe game itself"""
     def __init__(self, parent):
         self.parent = parent
-        self.board = Board() # [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.board = Board()
 
         self.player_1, self.player_2 = self.create_players()
         self.player = self.player_1

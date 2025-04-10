@@ -105,14 +105,14 @@ class MiniMaxNode:
         if self.board.get_result():
             return
 
-        for i, row in enumerate(self.board.state):
-            for j, cell in enumerate(row):
+        for row_index, row in enumerate(self.board.state):
+            for col_index, cell in enumerate(row):
                 if cell == ' ':
                     new_state = deepcopy(self.board.state)
-                    new_state[i][j] = players[0]
+                    new_state[row_index][col_index] = players[0]
                     new_board = Board(new_state)
                     child_node = MiniMaxNode(new_board)
-                    child_node.preceding_move = child_node.get_move(i, j)
+                    child_node.preceding_move = child_node.get_move(row_index, col_index)
                     self.children.append(child_node)
 
         # Recursively evaluate for each child, while swapping players
