@@ -7,6 +7,7 @@
 """
 
 from frames import *
+from random import choice
 
 
 class App(ctk.CTk):
