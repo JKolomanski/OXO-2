@@ -59,7 +59,7 @@ class MiniMaxNode:
         elif result == min_player: return -1
         else: return None
 
-    def evaluate_minimax_score(self, functions: list, min_player: str, max_player: str) -> int | None:
+    def evaluate_minimax_score(self, functions: tuple, min_player: str, max_player: str) -> int | None:
         """
         Recursively evaluate the minmax score for this node based on scores of all descendants
 
@@ -93,7 +93,7 @@ class MiniMaxNode:
         return self.board.template[row_index][cell_index]
 
 
-    def expand(self, players: tuple[str]) -> None:
+    def expand(self, players: tuple[str, str]) -> None:
         """
         Add all the possible valid future descendants, based on the state inside this Node object,
         to the children attribute recursively
