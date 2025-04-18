@@ -44,6 +44,33 @@ class MiniMaxNode:
             count += child.count_children()
         return count
 
+    def evaluate_modifier(self, max_player: str, min_player: str):
+        """
+        Evaluate the modifier for the heuristic function
+
+        :param min_player: The symbol for the min player
+        :param max_player: The symbol for the max player
+        :returns: int from -1 to 1 based on result or None if the state isn't terminal
+
+        """
+        modifier = 0
+
+        # Center
+        if self.board.state[1][1] == max_player: modifier += 0.5
+        if self.board.state[1][1] == min_player: modifier -= 0.5
+
+        # Diagonals
+        if self.board.state[0][0] == max_player: modifier += 0.1
+        if self.board.state[0][0] == min_player: modifier -= 0.1
+        if self.board.state[0][1] == max_player: modifier += 0.1
+        if self.board.state[0][1] == min_player: modifier -= 0.1
+        if self.board.state[2][0] == max_player: modifier += 0.1
+        if self.board.state[2][0] == min_player: modifier -= 0.1
+        if self.board.state[0][2] == max_player: modifier += 0.1
+        if self.board.state[0][2] == min_player: modifier -= 0.1
+
+        return modifier
+
     def evaluate_score(self, min_player: str, max_player: str) -> int | None:
         """
         Evaluate score for the minimax algorithm based and current board state
@@ -53,10 +80,11 @@ class MiniMaxNode:
         :returns: int from -1 to 1 based on result or None if the state isn't terminal
         """
         result = self.board.get_result()
+        modifier = self.evaluate_modifier(max_player, min_player)
 
-        if result == max_player: return 1
-        elif result == 'FULL': return 0
-        elif result == min_player: return -1
+        if result == max_player: return 1 + modifier
+        elif result == 'FULL': return 0 + modifier
+        elif result == min_player: return -1 + modifier
         else: return None
 
     def evaluate_minimax_score(self, functions: list, min_player: str, max_player: str) -> int | None:
@@ -92,7 +120,6 @@ class MiniMaxNode:
         """
         return self.board.template[row_index][cell_index]
 
-
     def expand(self, players: tuple[str]) -> None:
         """
         Add all the possible valid future descendants, based on the state inside this Node object,
@@ -105,14 +132,14 @@ class MiniMaxNode:
         if self.board.get_result():
             return
 
-        for row_index, row in enumerate(self.board.state):
-            for col_index, cell in enumerate(row):
+        for i, row in enumerate(self.board.state):
+            for j, cell in enumerate(row):
                 if cell == ' ':
                     new_state = deepcopy(self.board.state)
-                    new_state[row_index][col_index] = players[0]
+                    new_state[i][j] = players[0]
                     new_board = Board(new_state)
                     child_node = MiniMaxNode(new_board)
-                    child_node.preceding_move = child_node.get_move(row_index, col_index)
+                    child_node.preceding_move = child_node.get_move(i, j)
                     self.children.append(child_node)
 
         # Recursively evaluate for each child, while swapping players

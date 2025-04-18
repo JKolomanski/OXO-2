@@ -53,10 +53,13 @@ class MiniMaxNode:
         :returns: int from -1 to 1 based on result or None if the state isn't terminal
         """
         result = self.board.get_result()
+        modifier = 0
+        if self.board.state[1][1] == max_player: modifier += 1
+        if self.board.state[1][1] == min_player: modifier -= 1
 
-        if result == max_player: return 1
+        if result == max_player: return 1 + modifier
         elif result == 'FULL': return 0
-        elif result == min_player: return -1
+        elif result == min_player: return -1 + modifier
         else: return None
 
     def evaluate_minimax_score(self, functions: list, min_player: str, max_player: str) -> int | None:
