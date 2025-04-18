@@ -41,7 +41,7 @@ class AiPlayer(Player):
     """Handles the random computer player."""
 
     def turn(self):
-        """Handles ai player move by choosing a random cell index from available"""
+        """Handles AI player move by choosing a random cell index from available"""
         move = choice(self.parent.board.get_possible_moves())
         self.parent.handle_move(move)
 
